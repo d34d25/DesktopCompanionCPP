@@ -529,17 +529,17 @@ Image NewCanvasX::LoadImg(const std::string& filepath)
 	img.backendHandle = static_cast<void*>(pBitmap);
 
 	img.backendCleanup = [](void*& handle)
-	{
-		if (handle)
 		{
-			ID2D1Bitmap*& bmp = reinterpret_cast<ID2D1Bitmap*&>(handle);
+			if (handle)
+			{
+				ID2D1Bitmap*& bmp = reinterpret_cast<ID2D1Bitmap*&>(handle);
 
-			std::cout << "releasing bitmap at " << bmp << std::endl;
+				std::cout << "releasing bitmap at " << bmp << std::endl;
 
-			SafeRelease(&bmp);
+				SafeRelease(&bmp);
 
-		}
-	};
+			}
+		};
 
 
 	return img;

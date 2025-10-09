@@ -1,6 +1,13 @@
 #pragma once
 #include <vector>
 #include <functional>
+#include <string>
+#include <map>
+#include <ranges>
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
+
 
 template <typename T>
 void SafeRelease(T** ppT)
@@ -50,7 +57,6 @@ namespace Shapes
 		std::vector<Vector2D> vertices;
 	};
 }
-
 
 
 class Image
@@ -115,6 +121,7 @@ public:
 
 
 
+
 template<typename T1, typename T2>
 constexpr auto m_max(const T1& a, const T2& b)
 {
@@ -129,3 +136,61 @@ constexpr auto m_min(const T1& a, const T2& b)
 	return (static_cast<CommonType>(a) < static_cast<CommonType>(b)) ? static_cast<CommonType>(a) : static_cast<CommonType>(b);
 }
 
+
+using ImageList = std::vector<Image*>;
+
+
+enum class Mood
+{
+	HAPPY,
+	VERYHAPPY,
+	ANGRY,
+	VERYANGRY,
+	EMBARRASSED,
+	VERYEMBARRASSED,
+	ANNOYED,
+	VERYANNOYED,
+	SURPRISED,
+	NEUTRAL
+};
+
+enum class Variant
+{
+	BASE,
+	SWIMSUIT,
+	NIGHTWEAR,
+	DRESS
+};
+
+struct MoodImages
+{
+	std::map<Mood, ImageList> imagesByMood;
+
+	Image* GetImageForMood(Mood mood)
+	{
+		auto it = imagesByMood.find(mood);
+
+		if (it != imagesByMood.end() && !it->second.empty())
+		{
+			static bool seeded = false;
+
+			if (!seeded)
+			{
+				std::srand(static_cast<unsigned>(std::time(0)));
+				seeded = true;
+			}
+
+			ImageList& imgList = it->second;
+
+			int randomIndex = std::rand() % imgList.size();
+
+			return imgList[randomIndex];
+		}
+
+		return nullptr;
+	}
+};
+
+std::string ToUpper(const std::string& input);
+
+std::string ExtractPrefix(const std::string& input);

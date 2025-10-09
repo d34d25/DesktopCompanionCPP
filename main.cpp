@@ -2,20 +2,21 @@
 #include "window.h"
 #include <wincodec.h>
 #include "input.h"
-
+#include "companion.h"
 
 Shapes::Rectangle clRect;
 
-
 Color rectCl = { 255,255,0,50};
 
-float hinaScaleX = 1.0f;
-float hinaScaleY = 1.0f;
+float hinaScaleX = 0.85f;
+float hinaScaleY = 0.85f;
 
 Image hiniatureA;
 Image hiniatureB;
 
 Image hana;
+
+Companion* hinature;
 
 bool clicked = false;
 
@@ -26,24 +27,54 @@ void mDraw(NewCanvasX* canvas)
 
 	canvas->Clear({0.0f,0.0f,0.0f,0.0f});
 
+	
 
 	//draw here--------------------------------------------------------
 
+	float drawX = clRect.x + (clRect.width * 0.5f) - (hiniatureA.width * hinaScaleX * 0.5f) - 65;
+	float drawY = clRect.y + clRect.height - (hiniatureA.height * hinaScaleY) - 40;
 
-	//canvas->DrawRect(clRect, rectCl, 0.0f, 1.0f, 1.0f);
-
-	float drawX = clRect.x + (clRect.width / 2) - (hiniatureA.width * hinaScaleX / 2) + 20;
-	float drawY = clRect.y + clRect.height - (hiniatureA.height * hinaScaleY) + 40;
-
-	if (!clicked)
+	if (hinature)
 	{
-		canvas->DrawImg(hiniatureA, drawX, drawY, nullptr, 0.0f, hinaScaleX, hinaScaleY);
-	}
-	else
-	{
-		canvas->DrawImg(hiniatureB, drawX, drawY, nullptr, 0.0f, hinaScaleX, hinaScaleY);
+		//reminder to self
+		/*
+		* Copy for image objects is disabled
+		* so after doing Image img = LoadImg("path");
+		* you can't copy it in any way
+		* 
+		* so doing Image img2 = img is not possible
+		* for that you gotta do img2 = std::move(img);
+		* 
+		* but doing this will result of the original varibale
+		* not be usebale unless you move it back again
+		* (you're literally moving the variable from one place
+		* to another)
+		* 
+		* another approach is using pointers
+		* 
+		*/
+
+		//I hope I don't end up breaking my keyboard :)
+
+		Image* currImg = hinature->GetCurrentImage();
+
+		if (currImg->isValid() || currImg) 
+		{
+			canvas->DrawImg(*currImg, drawX, drawY, nullptr, 0.0f, hinaScaleX, hinaScaleY);
+		}
+
+
+		if (clicked)
+		{
+			hinature->ChangeMood(Mood::EMBARRASSED);
+		}
+		else
+		{
+			hinature->ChangeMood(Mood::NEUTRAL);
+		}
 	}
 
+	//canvas->DrawRect(clRect, rectCl);
 
 	//--------------------------------------------------------------------
 
@@ -55,17 +86,21 @@ void mDraw(NewCanvasX* canvas)
 
 int main()
 {
+	bool dragging = false;
+
 	Input* globalInput;
 
 	Window* pWindow = new Window(1200, 680);
 	
-	hiniatureA = pWindow->GetNewCanvas()->LoadImg("D:\\ProgrammingProjects\\Cpp\\DesktopCompanion\\assets\\images\\Hina_00.png");
-	hiniatureB = pWindow->GetNewCanvas()->LoadImg("D:\\ProgrammingProjects\\Cpp\\DesktopCompanion\\assets\\images\\Hina_10.png");
+	hiniatureA = pWindow->GetNewCanvas()->LoadImg("D:\\ProgrammingProjects\\Cpp\\DesktopCompanion\\assets\\images\\base\\neutral00.png");
+	hiniatureB = pWindow->GetNewCanvas()->LoadImg("D:\\ProgrammingProjects\\Cpp\\DesktopCompanion\\assets\\images\\base\\veryEmbarrassed10.png");
 	
-	clRect.width = 200;
-	clRect.height = 700;
+	hinature = new Companion(pWindow->GetNewCanvas(), Variant::BASE);
 
-	clRect.x = 700;//pWindow->GetScreenWidth() - clRect.width;
+	clRect.width = 200 * hinaScaleX;
+	clRect.height = 715 * hinaScaleY;
+
+	clRect.x = pWindow->GetScreenWidth() - clRect.width;
 	clRect.y = pWindow->GetScreenHeight() - clRect.height;
 
 	pWindow->SetNewDrawCallback(mDraw);
@@ -116,10 +151,25 @@ int main()
 			clicked = false;
 		}
 
+		if (IsPointOnRect(mousePos, clRect) && globalInput->IsMiddleMouseHeld())
+		{
+			dragging = true;
+		}
+		else if(globalInput->IsMiddleMouseReleased())
+		{
+			dragging = false;
+		}
+
+		if (dragging)
+		{
+			clRect.x = (mousePos.x - clRect.width * 0.5f);
+			clRect.y = (mousePos.y - clRect.height * 0.25f);
+		}
 
 		Sleep(20);
 	}
 
+	delete hinature;
 	delete globalInput;
 	delete pWindow;
 
