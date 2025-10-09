@@ -566,11 +566,14 @@ void NewCanvasX::DrawImg(const Image& image, float x, float y, const Shapes::Rec
 		int sw = m_min(sourceRect->width, image.width - sx);
 		int sh = m_min(sourceRect->height, image.height - sy);
 
+		float scaledSw = sw * scaleX;
+		float scaledSh = sh * scaleY;
+
 		d2dSourceRect = D2D1::RectF(
 			static_cast<FLOAT>(sx),
 			static_cast<FLOAT>(sy),
-			static_cast<FLOAT>(sx + sw),
-			static_cast<FLOAT>(sy + sh)
+			static_cast<FLOAT>(sx + scaledSw),
+			static_cast<FLOAT>(sy + scaledSh)
 		);
 
 		drawWidth = sw;
@@ -580,8 +583,8 @@ void NewCanvasX::DrawImg(const Image& image, float x, float y, const Shapes::Rec
 	else
 	{
 		d2dSourceRect = D2D1::RectF(0, 0, image.width, image.height);
-		drawWidth = static_cast<float> (image.width);
-		drawHeight = static_cast<float>(image.height);
+		drawWidth = static_cast<float> (image.width * scaleX);
+		drawHeight = static_cast<float>(image.height * scaleY);
 	}
 
 	D2D1_MATRIX_3X2_F transform =

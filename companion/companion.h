@@ -16,6 +16,8 @@ struct LoadedImage
     std::string filename;
 };
 
+std::string VariantToFolderName(Variant currentVariant);
+
 class Companion
 {
 private:
@@ -29,7 +31,8 @@ private:
     MoodImages LoadImagesFromFolder(const std::string& folderPath);
 
     std::vector<LoadedImage> loadedImages;
-    std::map<Variant, MoodImages> allVariants;
+
+    std::map<Variant, MoodImages> variants;
 
     Mood currentMood;
     Variant currentVariant;
@@ -43,4 +46,6 @@ public:
     void ChangeMood(Mood mood);
 
     Image* GetCurrentImage();
+
+    Variant GetCurrentVariant() const;
 };

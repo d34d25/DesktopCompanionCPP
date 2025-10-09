@@ -15,16 +15,32 @@ const std::map<std::string, Mood> moodMap = {
 	{"NEUTRAL", Mood::NEUTRAL}
 };
 
+std::string VariantToFolderName(Variant currentVariant)
+{
+	switch (currentVariant)
+	{
+		case Variant::BASE: return "base";
+		case Variant::NIGHTWEAR: return "nightwear";
+		case Variant::SWIMSUIT: return "swimsuit";
+		case Variant::DRESS: return "dress";
+		default: return "unknown";
+	}
+}
+
 Companion::Companion(NewCanvasX* canvas, Variant startVariant)
 {
 	this->canvas = canvas;
 	currentVariant = startVariant;
 	currentMood = Mood::NEUTRAL;
 
-	allVariants[Variant::BASE] = LoadImagesFromFolder("../assets/images/base");
+	std::string folderName = VariantToFolderName(currentVariant);
 
-	auto it = allVariants[currentVariant].imagesByMood.find(currentMood);
-	if (it != allVariants[currentVariant].imagesByMood.end() && !it->second.empty())
+	std::string path = "../assets/images/" + folderName;
+
+	variants[currentVariant] = LoadImagesFromFolder(path);
+
+	auto it = variants[currentVariant].imagesByMood.find(currentMood);
+	if (it != variants[currentVariant].imagesByMood.end() && !it->second.empty())
 	{
 		currentImage = it->second.front();
 	}
@@ -93,12 +109,17 @@ void Companion::ChangeMood(Mood mood)
 	if (mood != currentMood)
 	{
 		currentMood = mood;
-		currentImage = allVariants[currentVariant].GetImageForMood(currentMood);
+		currentImage = variants[currentVariant].GetImageForMood(currentMood);
 	}
 }
 
 Image* Companion::GetCurrentImage()
 {
 	return currentImage;
+}
+
+Variant Companion::GetCurrentVariant() const
+{
+	return this->currentVariant;
 }
 

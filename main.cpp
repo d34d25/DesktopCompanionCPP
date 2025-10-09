@@ -8,17 +8,26 @@ Shapes::Rectangle clRect;
 
 Color rectCl = { 255,255,0,50};
 
-float hinaScaleX = 0.85f;
-float hinaScaleY = 0.85f;
-
-Image hiniatureA;
-Image hiniatureB;
-
-Image hana;
+float hinaScale = 0.75f;
 
 Companion* hinature;
 
 bool clicked = false;
+
+float screenW, screenH;
+
+float scaleX, scaleY;
+
+float offsetNumX, offsetNumY;
+
+void ResizeClRect(Image* img)
+{
+	float scaledImageWidth = img->width * hinaScale * hinaScale * scaleX;
+	float scaledImageHeight = img->height * hinaScale * hinaScale * scaleY;
+
+	clRect.width = scaledImageWidth;
+	clRect.height = scaledImageHeight;
+}
 
 void mDraw(NewCanvasX* canvas)
 {
@@ -30,9 +39,6 @@ void mDraw(NewCanvasX* canvas)
 	
 
 	//draw here--------------------------------------------------------
-
-	float drawX = clRect.x + (clRect.width * 0.5f) - (hiniatureA.width * hinaScaleX * 0.5f) - 65;
-	float drawY = clRect.y + clRect.height - (hiniatureA.height * hinaScaleY) - 40;
 
 	if (hinature)
 	{
@@ -55,14 +61,27 @@ void mDraw(NewCanvasX* canvas)
 		*/
 
 		//I hope I don't end up breaking my keyboard :)
+		
+		float offsetX, offsetY;
+
+		offsetX = offsetNumX * hinaScale * hinaScale;
+		offsetY = -offsetNumY * hinaScale * hinaScale;
+ 
+		//hinaScale += 0.0005;
 
 		Image* currImg = hinature->GetCurrentImage();
 
-		if (currImg->isValid() || currImg) 
-		{
-			canvas->DrawImg(*currImg, drawX, drawY, nullptr, 0.0f, hinaScaleX, hinaScaleY);
-		}
+		float drawX = clRect.x + (clRect.width * 0.5f) - (currImg->width * hinaScale * 0.5f) + offsetX;
+		float drawY = clRect.y + (clRect.height * 0.5f) - (currImg->height * hinaScale * 0.5f) + offsetY;
 
+		if (currImg) 
+		{
+			if (currImg->isValid())
+			{
+				canvas->DrawImg(*currImg, drawX, drawY, nullptr, 0.0f, hinaScale, hinaScale);
+			}
+		}
+		ResizeClRect(currImg);
 
 		if (clicked)
 		{
@@ -72,9 +91,35 @@ void mDraw(NewCanvasX* canvas)
 		{
 			hinature->ChangeMood(Mood::NEUTRAL);
 		}
+
+		Shapes::Circle drawCircle;
+		drawCircle.radius = 10;
+		drawCircle.x = drawX;
+		drawCircle.y = drawY;
+
+		//canvas->DrawCir(drawCircle, { 0,255,0,255 });
+
+		Shapes::Circle rectCircle;
+		drawCircle.radius = 10;
+		drawCircle.x = clRect.x;
+		drawCircle.y = clRect.y;
+
+		//canvas->DrawCir(drawCircle, { 255,255,0,255 });
+
+		Shapes::Rectangle imgRect;
+
+		imgRect.x = drawX;
+		imgRect.y = drawY;
+
+		imgRect.width = currImg->width * hinaScale;
+		imgRect.height = currImg->height * hinaScale;
+
+		//canvas->DrawRectO(imgRect, { 255,0,0,255 });
 	}
 
 	//canvas->DrawRect(clRect, rectCl);
+
+
 
 	//--------------------------------------------------------------------
 
@@ -92,16 +137,35 @@ int main()
 
 	Window* pWindow = new Window(1200, 680);
 	
-	hiniatureA = pWindow->GetNewCanvas()->LoadImg("D:\\ProgrammingProjects\\Cpp\\DesktopCompanion\\assets\\images\\base\\neutral00.png");
-	hiniatureB = pWindow->GetNewCanvas()->LoadImg("D:\\ProgrammingProjects\\Cpp\\DesktopCompanion\\assets\\images\\base\\veryEmbarrassed10.png");
-	
-	hinature = new Companion(pWindow->GetNewCanvas(), Variant::BASE);
+	screenW = pWindow->GetScreenWidth();
+	screenH = pWindow->GetScreenHeight();
 
-	clRect.width = 200 * hinaScaleX;
-	clRect.height = 715 * hinaScaleY;
+	hinature = new Companion(pWindow->GetNewCanvas(), Variant::NIGHTWEAR);
 
-	clRect.x = pWindow->GetScreenWidth() - clRect.width;
-	clRect.y = pWindow->GetScreenHeight() - clRect.height;
+	switch (hinature->GetCurrentVariant())
+	{
+		case Variant::BASE:
+			offsetNumX = 30;
+			offsetNumY = 40;
+			scaleX = 0.17f;
+			scaleY = 0.85f;
+			break;
+		case Variant::NIGHTWEAR:
+			offsetNumX = -40;
+			offsetNumY = 10;
+			scaleX = 0.6;
+			scaleY = 0.85;
+			break;
+		case Variant::SWIMSUIT:
+			break;
+		case Variant::DRESS:
+			break;
+	}
+
+	ResizeClRect(hinature->GetCurrentImage());
+
+	clRect.x = screenW - clRect.width;
+	clRect.y = screenH - clRect.height;
 
 	pWindow->SetNewDrawCallback(mDraw);
 
