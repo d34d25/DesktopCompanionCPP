@@ -11,6 +11,7 @@ struct Button
 {
 	UI_Element element;
 	Shapes::Circle button;
+	std::string text;
 };
 
 struct TextArea
@@ -20,3 +21,5 @@ struct TextArea
 };
 
 Shapes::Rectangle CalculateBtnRect(Shapes::Circle& circle);
+
+Shapes::Rectangle SetButtonTextArea(const Button& button, float offsetX = 0.0f,float offsetY = 0.0f);

@@ -11,3 +11,14 @@ Shapes::Rectangle CalculateBtnRect(Shapes::Circle& circle)
 
     return aabb;
 }
+
+Shapes::Rectangle SetButtonTextArea(const Button& button, float offsetX, float offsetY)
+{
+    Shapes::Rectangle btnTextArea;
+    btnTextArea.x = button.element.hitbox.x + offsetX;
+    btnTextArea.y = button.element.hitbox.y + offsetY;
+    btnTextArea.width = button.element.hitbox.width;
+    btnTextArea.height = button.element.hitbox.height;
+
+    return btnTextArea;
+}

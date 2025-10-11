@@ -29,6 +29,8 @@ float offsetNumX, offsetNumY;
 
 Button scaleUpBtn;
 Button scaleDownBtn;
+Button baseBtn;
+Button nightwearBtn;
 
 void ResizeClRect(Image* img)
 {
@@ -75,14 +77,7 @@ void UpdateScaleForVariant()
 
 void Update()
 {
-	newVariant = Variant::NIGHTWEAR;
 
-	if ((hinature->GetCurrentVariant() != newVariant) && globalInput->IsKeyPressed(VK_2))
-	{
-		hinature->ChangeVariant(newVariant);
-
-		UpdateScaleForVariant();
-	}
 
 	if (clicked)
 	{
@@ -142,8 +137,35 @@ void mDraw(NewCanvasX* canvas)
 		}
 
 		canvas->DrawCir(scaleUpBtn.button, scaleUpBtn.element.uiColor);
+
+		Shapes::Rectangle scaleUpText = SetButtonTextArea(scaleUpBtn, 
+			scaleUpBtn.button.radius * 0.5f -1.0f,
+			-scaleUpBtn.button.radius * 0.25);
+
+		canvas->DrawTxt(scaleUpBtn.text, scaleUpText, { 255,255,255, scaleUpBtn.element.uiColor.a });
+
 		canvas->DrawCir(scaleDownBtn.button, scaleUpBtn.element.uiColor);
 
+		Shapes::Rectangle scaleDownText = SetButtonTextArea(scaleDownBtn,
+			scaleDownBtn.button.radius * 0.5f + 2.5f,
+			-scaleDownBtn.button.radius * 0.25f);
+
+		canvas->DrawTxt(scaleDownBtn.text, scaleDownText, { 255,255,255, scaleDownBtn.element.uiColor.a });
+
+		canvas->DrawCir(baseBtn.button, baseBtn.element.uiColor);
+
+		Shapes::Rectangle baseBtnText = SetButtonTextArea(baseBtn,
+			baseBtn.button.radius * 0.5f,
+			-baseBtn.button.radius * 0.25f);
+
+		canvas->DrawTxt(baseBtn.text, baseBtnText, { 255,255,255,baseBtn.element.uiColor.a });
+
+		canvas->DrawCir(nightwearBtn.button, nightwearBtn.element.uiColor);
+
+		Shapes::Rectangle nightwearBtnText = SetButtonTextArea(nightwearBtn,
+			nightwearBtn.button.radius * 0.5f,
+			-nightwearBtn.button.radius * 0.25f);
+		canvas->DrawTxt(nightwearBtn.text, nightwearBtnText, { 255,255,255, nightwearBtn.element.uiColor.a });
 
 		//debug draw (temporal)
 
@@ -206,15 +228,47 @@ int main()
 
 	scaleUpBtn = Button();
 	scaleUpBtn.button.radius = 15;
-	SetBtnPos(scaleUpBtn, clRect, scaleUpBtn.button.radius * 2, scaleUpBtn.button.radius * 2);
+
+	const int buttonSpacing = 10;
+	const int buttonDiameter = scaleUpBtn.button.radius * 2;
+
+	int baseY = buttonDiameter + buttonSpacing;
+
 	scaleUpBtn.element.hitbox = CalculateBtnRect(scaleUpBtn.button);
 	scaleUpBtn.element.uiColor = { 100,100,255,0 };
+	scaleUpBtn.text = "+";
 
 	scaleDownBtn = Button();
 	scaleDownBtn.button.radius = 15;
-	SetBtnPos(scaleDownBtn, clRect, scaleDownBtn.button.radius * 2, (scaleDownBtn.button.radius * 4) + 10);
 	scaleDownBtn.element.hitbox = CalculateBtnRect(scaleDownBtn.button);
 	scaleDownBtn.element.uiColor = { 100,100,255,0 };
+	scaleDownBtn.text = "-";
+
+	baseBtn = Button();
+	baseBtn.button.radius = 15;
+	baseBtn.element.hitbox = CalculateBtnRect(baseBtn.button);
+	baseBtn.element.uiColor = { 255,100,255,0 };
+	baseBtn.text = "0";
+
+	nightwearBtn = Button();
+	nightwearBtn.button.radius = 15;
+	nightwearBtn.element.hitbox = CalculateBtnRect(nightwearBtn.button);
+	nightwearBtn.element.uiColor = { 255,255,100,0 };
+	nightwearBtn.text = "1";
+
+	// First button at y = 30 + 10 = 40
+	SetBtnPos(scaleUpBtn, clRect, buttonDiameter, baseY); 
+	SetBtnPos(scaleDownBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 1);
+	SetBtnPos(baseBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 2);
+	SetBtnPos(nightwearBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 3);
+
+	auto UpdateButtonsAndRect = [&]() {
+		ResizeClRect(hinature->GetCurrentImage());
+		SetBtnPos(scaleUpBtn, clRect, buttonDiameter, baseY);
+		SetBtnPos(scaleDownBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 1);
+		SetBtnPos(baseBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 2);
+		SetBtnPos(nightwearBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 3);
+		};
 
 	bool running = true;
 
@@ -230,6 +284,11 @@ int main()
 
 		bool mouseInScaleUpBtnArea = IsPointOnRect(mousePos, scaleUpBtn.element.hitbox);
 		bool mouseInScaleDownBtnArea = IsPointOnRect(mousePos, scaleDownBtn.element.hitbox);
+		bool mouseInBaseBtnArea = IsPointOnRect(mousePos, baseBtn.element.hitbox);
+		bool mouseInNightwearBtnArea = IsPointOnRect(mousePos, nightwearBtn.element.hitbox);
+
+		bool mouseInButton = mouseInScaleUpBtnArea || mouseInScaleDownBtnArea ||
+			mouseInBaseBtnArea || mouseInNightwearBtnArea;
 
 		bool leftMousePressed = globalInput->IsLeftMousePressed();
 
@@ -239,7 +298,7 @@ int main()
 
 		bool middleMouseReleased = globalInput->IsMiddleMouseReleased();
 
-		if (mouseInClickableArea || mouseInScaleUpBtnArea|| mouseInScaleDownBtnArea)
+		if (mouseInClickableArea || mouseInButton)
 		{
 			rectCl = { 0,0,255,50 };
 
@@ -279,31 +338,50 @@ int main()
 			dragging = false;
 		}
 
-		if (mouseInScaleDownBtnArea ||mouseInScaleUpBtnArea)
+		if (mouseInButton)
 		{
 			scaleUpBtn.element.uiColor.a = 180;
 			scaleDownBtn.element.uiColor.a = 180;
+			baseBtn.element.uiColor.a = 180;
+			nightwearBtn.element.uiColor.a = 180;
 		}
 		else
 		{
 			scaleUpBtn.element.uiColor.a = 50;
 			scaleDownBtn.element.uiColor.a = 50;
+			baseBtn.element.uiColor.a = 50;
+			nightwearBtn.element.uiColor.a = 50;
 		}
 
 		if (mouseInScaleUpBtnArea && leftMousePressed)
 		{
 			hinaScale += 0.01;
-			ResizeClRect(hinature->GetCurrentImage());
-			SetBtnPos(scaleUpBtn, clRect, scaleUpBtn.button.radius * 2, scaleUpBtn.button.radius * 2);
-			SetBtnPos(scaleDownBtn, clRect, scaleDownBtn.button.radius * 2, (scaleDownBtn.button.radius * 4) + 10);
+			UpdateButtonsAndRect();
+
 		}
 
 		if (mouseInScaleDownBtnArea && leftMousePressed)
 		{
 			hinaScale -= 0.01;
-			ResizeClRect(hinature->GetCurrentImage());
-			SetBtnPos(scaleUpBtn, clRect, scaleUpBtn.button.radius * 2, scaleUpBtn.button.radius * 2);
-			SetBtnPos(scaleDownBtn, clRect, scaleDownBtn.button.radius * 2, (scaleDownBtn.button.radius * 4) + 10);
+			UpdateButtonsAndRect();
+		}
+
+		if (mouseInBaseBtnArea && leftMousePressed)
+		{
+			hinature->ChangeVariant(Variant::BASE);
+
+			UpdateScaleForVariant();
+
+			UpdateButtonsAndRect();
+		}
+
+		if (mouseInNightwearBtnArea && leftMousePressed)
+		{
+			hinature->ChangeVariant(Variant::NIGHTWEAR);
+
+			UpdateScaleForVariant();
+
+			UpdateButtonsAndRect();
 		}
 
 		if (dragging)
@@ -311,8 +389,7 @@ int main()
 			clRect.x = (mousePos.x - clRect.width * 0.5f);
 			clRect.y = (mousePos.y - clRect.height * 0.25f);
 
-			SetBtnPos(scaleUpBtn, clRect, scaleUpBtn.button.radius * 2, scaleUpBtn.button.radius * 2);
-			SetBtnPos(scaleDownBtn, clRect, scaleDownBtn.button.radius * 2, (scaleDownBtn.button.radius * 4) + 10);
+			UpdateButtonsAndRect();
 		}
 
 		
