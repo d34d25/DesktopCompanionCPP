@@ -151,7 +151,8 @@ enum class Mood
 	ANNOYED,
 	VERYANNOYED,
 	SURPRISED,
-	NEUTRAL
+	NEUTRAL,
+	IDLE
 };
 
 enum class Variant
@@ -160,6 +161,12 @@ enum class Variant
 	SWIMSUIT,
 	NIGHTWEAR,
 	DRESS
+};
+
+struct Dialog
+{
+	std::string text;
+	Mood requiredMood;
 };
 
 struct MoodImages

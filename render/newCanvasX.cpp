@@ -36,6 +36,7 @@ D2D_POINT_2F NewCanvasX::nToD2D1Point(const Vector2D& point)
 
 NewCanvasX::NewCanvasX(HWND window)
 {
+
 	HR(D3D11CreateDevice(nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
@@ -163,13 +164,29 @@ void NewCanvasX::Clear(Color color)
 
 void NewCanvasX::EndDraw()
 {
-	HR(dc->EndDraw());
+	try
+	{
+		HR(dc->EndDraw());
+	}
+	catch (const ComException& e)
+	{
+		//std::cerr << "COM Exception caught: " << e.what() << std::endl;
+	}
+	
 }
 
 void NewCanvasX::Present()
 {
-	HR(swapChain->Present(1,
-		0));
+	try
+	{
+		HR(swapChain->Present(1,
+			0));
+	}
+	catch (const ComException& e)
+	{
+		//std::cerr << "COM Exception caught: " << e.what() << std::endl;
+	}
+	
 }
 
 void NewCanvasX::nSetBrushColor(Color color)

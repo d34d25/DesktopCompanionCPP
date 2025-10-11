@@ -4,12 +4,6 @@
 
 extern const std::map<std::string, Mood> moodMap;
 
-struct Dialog
-{
-    std::string text;
-    Mood requiredMood;
-};
-
 struct LoadedImage
 {
     Image img;
@@ -22,13 +16,18 @@ class Companion
 {
 private:
 
-   
+    float moodTimer = 0.0f;
+    float moodDuration = 1.2f;
+
+    Mood defaultMood = Mood::IDLE;
 
     std::vector<Dialog> dialogs;
 
     NewCanvasX* canvas;
 
     MoodImages LoadImagesFromFolder(const std::string& folderPath);
+
+    void Initialize(Variant variant);
 
     std::vector<LoadedImage> loadedImages;
 
@@ -43,9 +42,13 @@ public:
    
     Companion(NewCanvasX* canvas,Variant startVariant);
 
-    void ChangeMood(Mood mood);
+    void ChangeMood(Mood mood, float duration);
 
-    Image* GetCurrentImage();
+    void ChangeVariant(Variant variant);
+
+    void UpdateTimer();
+
+    Image* GetCurrentImage() const;
 
     Variant GetCurrentVariant() const;
 };

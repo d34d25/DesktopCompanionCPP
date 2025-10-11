@@ -12,7 +12,8 @@ const std::map<std::string, Mood> moodMap = {
 	{"ANNOYED", Mood::ANNOYED},
 	{"VERYANNOYED", Mood::VERYANNOYED},
 	{"SURPRISED", Mood::SURPRISED},
-	{"NEUTRAL", Mood::NEUTRAL}
+	{"NEUTRAL", Mood::NEUTRAL},
+	{"IDLE", Mood::IDLE}
 };
 
 std::string VariantToFolderName(Variant currentVariant)
@@ -31,19 +32,9 @@ Companion::Companion(NewCanvasX* canvas, Variant startVariant)
 {
 	this->canvas = canvas;
 	currentVariant = startVariant;
-	currentMood = Mood::NEUTRAL;
+	currentMood = defaultMood;
 
-	std::string folderName = VariantToFolderName(currentVariant);
-
-	std::string path = "../assets/images/" + folderName;
-
-	variants[currentVariant] = LoadImagesFromFolder(path);
-
-	auto it = variants[currentVariant].imagesByMood.find(currentMood);
-	if (it != variants[currentVariant].imagesByMood.end() && !it->second.empty())
-	{
-		currentImage = it->second.front();
-	}
+	Initialize(startVariant);
 }
 
 MoodImages Companion::LoadImagesFromFolder(const std::string& folderPath)
@@ -102,20 +93,75 @@ MoodImages Companion::LoadImagesFromFolder(const std::string& folderPath)
 	return moodImages;
 }
 
+void Companion::Initialize(Variant variant)
+{
+	currentVariant = variant;
 
+	loadedImages.clear();
 
-void Companion::ChangeMood(Mood mood)
+	std::string folderName = VariantToFolderName(currentVariant);
+
+	std::string path = "../assets/images/" + folderName;
+
+	variants[currentVariant] = LoadImagesFromFolder(path);
+
+	auto it = variants[currentVariant].imagesByMood.find(currentMood);
+
+	if (it != variants[currentVariant].imagesByMood.end() && !it->second.empty())
+	{
+		currentImage = it->second.front();
+	}
+	else
+	{
+		currentImage = nullptr;
+	}
+}
+
+void Companion::ChangeVariant(Variant variant)
+{
+	if (variant == currentVariant) return;
+
+	Initialize(variant);
+}
+
+void Companion::ChangeMood(Mood mood, float duration)
 {
 	if (mood != currentMood)
 	{
 		currentMood = mood;
 		currentImage = variants[currentVariant].GetImageForMood(currentMood);
+		moodTimer = duration;
+		moodDuration = duration;
 	}
 }
 
-Image* Companion::GetCurrentImage()
+void Companion::UpdateTimer()
 {
-	return currentImage;
+	if (moodTimer > 0.0f)
+	{
+		moodTimer -= 0.02f;
+
+		if (moodTimer <= 0.0f)
+		{
+			currentMood = defaultMood;
+
+			auto it = variants[currentVariant].imagesByMood.find(currentMood);
+
+			if (it != variants[currentVariant].imagesByMood.end() && !it->second.empty())
+			{
+				currentImage = it->second.front();
+			}
+			else
+			{
+				currentImage = nullptr;
+			}
+		}
+	}
+}
+
+Image* Companion::GetCurrentImage() const
+{
+	return this->currentImage;
 }
 
 Variant Companion::GetCurrentVariant() const

@@ -68,9 +68,9 @@ Window::Window(int width, int height):
 
 	RegisterClass(&wndClass);
 
-	DWORD style = WS_POPUP;//WS_POPUP;
+	DWORD style = WS_POPUP;
 
-	exStyle = WS_EX_NOREDIRECTIONBITMAP | WS_EX_LAYERED;// | WS_EX_TOPMOST;
+	exStyle = WS_EX_NOREDIRECTIONBITMAP | WS_EX_LAYERED; //| WS_EX_TOPMOST;
 
 	screenWidth = GetSystemMetrics(SM_CXSCREEN);
 	screenHeight = GetSystemMetrics(SM_CYSCREEN);

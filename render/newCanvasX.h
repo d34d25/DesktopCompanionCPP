@@ -15,18 +15,30 @@ using namespace Microsoft::WRL;
 #include <d2d1_2helper.h>
 #include <dcomp.h>
 #include <string>
+#include <sstream>
 #pragma comment(lib, "dxgi")
 #pragma comment(lib, "d3d11")
 #pragma comment(lib, "d2d1")
 #pragma comment(lib, "dcomp")
 
 
-struct ComException
+struct ComException : public std::exception
 {
+	std::string message;
+
 	HRESULT result;
 	ComException(HRESULT const value):
 		result(value)
-	{}
+	{
+		std::ostringstream oss;
+		oss << "COM Error with HRESULT: 0x" << std::hex << result;
+		message = oss.str();
+	}
+
+	const char* what() const noexcept override
+	{
+		return message.c_str();
+	}
 };
 
 void HR(HRESULT const result);
