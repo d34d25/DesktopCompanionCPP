@@ -1,0 +1,95 @@
+DesktopCompanion\assets\images\base:
+
+	05 https://www.virustotal.com/gui/file/4b616cc52c3a285664f57b3942ba4bdbdf67bdf8d8ff7c8a85051004c285ae45/details
+	06 https://www.virustotal.com/gui/file/ef2682b060360c6391cb15558cc7374f729b88d84b8e14c41442be9ea8d5a4fc/details has relations tab
+	04 https://www.virustotal.com/gui/file/a7ccf57281db041b0c154fef0c6b28d20bc7cd4c29d7be9b3468b6adffbd60f6/details
+	13 https://www.virustotal.com/gui/file/ca23aff354fa443aa14103456b1efe5a4863bd4598af52aa3141ffab80ef9b09/details
+	14 https://www.virustotal.com/gui/file/c8ba298b6b6c603dd9791df4c57579f857e3862fd40fb68ca3be4414ef43fee9/details
+	18 https://www.virustotal.com/gui/file/90f5fdb5a4ef5044797b67403c76d7edf943319a0023cc5e788e14452c621e0b/details has relations tab
+	20 https://www.virustotal.com/gui/file/dc3db68fbb65ec18403c904e51529903b1e4ce251b0503e183e8516b2b097f27/details
+	11 https://www.virustotal.com/gui/file/c53f6a4d359c3acaae5c4a8c084eb0b8a613e2656648162b653110a59831926e/details has relations tab
+	12 https://www.virustotal.com/gui/file/4f9055004bf408821668683317ebc365ebe2ff75ebe5ac714aa3a1e74ec151f7/details has relations tab
+	03 https://www.virustotal.com/gui/file/d72f2f1cf10c21e1222d296614dbe7b01333bfdb9e0d7edf4e9611a443a3d57c/details has relations tab
+	07 https://www.virustotal.com/gui/file/b30e36e51b0913020ada19e1c581c41ee001b4e45fffc69680ba3957065095aa/details has relations tab
+	17 https://www.virustotal.com/gui/file/cea07201bde6aa63f464fa04a062790d83d1de5547a75e8801e1404b41221e24/details
+	00 https://www.virustotal.com/gui/file/c651c2c72c7b9c39c11f3c7c3114fd0ba1ca712440826f9e68bde0c91b71d19e/details
+	01 https://www.virustotal.com/gui/file/b71fcdbee6563ff29e8c0a54e8f23c62e8ac97f4443f4645e5930aca7a404a37/details has relations tab
+	02 https://www.virustotal.com/gui/file/10c270211f09b8041481c5227e70ed0a2b902142fb79ad5ece8dc1283f670419/details
+	16 https://www.virustotal.com/gui/file/e6dfd5a01dff3180261b8abd1dd6efa09c9fbcf705dfedd5df542e5f636cb6a1/details has relations tab
+	99 https://www.virustotal.com/gui/file/37dea2e6332baa7a07f344d0fc010ded96a1e536863c20feedb1309b83af39d1/details has relations tab
+	19 https://www.virustotal.com/gui/file/f5a56112578cc9e7f87359bdfbda87fe099c18f28ad467f4d7bc5c5e355b722c/details
+	15 https://www.virustotal.com/gui/file/7f35bacfca5a97d48a0efe5a68018270b4697e5bd4a478396c1e79b54560c8a4/details
+	09 https://www.virustotal.com/gui/file/adb7c68174bcbe6ce83f30614ddf3c35afa951cad529cdf51af347c0811eefe2/details
+	10 https://www.virustotal.com/gui/file/d1b0e6dc7136e3fc626305244fa9b523c8da5d65429460a692ba1013e2d1cd74/details
+	08 https://www.virustotal.com/gui/file/af634038b73d36938aaaa05cc5033dee4b88f619641579096a96afd02dd2a051/details
+
+	0 detections, all png files
+
+DesktopCompanion\assets\images\dress:
+	
+	00 https://www.virustotal.com/gui/file/ecb6c6f50fdb7b3c3616e83be4b9842b73dca49cb3028045c44aaa43495ee3ad/details
+	01 https://www.virustotal.com/gui/file/3f816b5a12587dc52b7b211ae1564a7c1e1bce5ab0d03cf462168bc0264fd8d4/details
+	02 https://www.virustotal.com/gui/file/c91441ea02aba903f63178ca7d1a43fbb288a87b39099e1f112013ba39d0a84f/details
+	03 https://www.virustotal.com/gui/file/8d6bb1323e391d5efcb23a8e0e8f9f3e45836f4ced71924c10405913c5e3a36f/details
+	04 https://www.virustotal.com/gui/file/87e87855a799e3b8689e0ec02f11759e3598b43427b3f360a1988ccf54c75c47/details
+	05 https://www.virustotal.com/gui/file/cb782102d0663932c7772a710eb56a33eb8e0bb41ccf4783ae5d0c32257d0940/details
+	06 https://www.virustotal.com/gui/file/36e0ff9d96559b31a664c2549fdf9652cb14c0efe1f54e1f4131059ae298cd46/details
+	07 https://www.virustotal.com/gui/file/da6104bb4fb468d59952ee125ffa78f2db629548dc5449637d84363987bec3d7/details
+	08 https://www.virustotal.com/gui/file/16b29cbea201df0ca0c7141d68b12ade116d49cca730053a83bb7e1a2ce16fe8/details
+	09 https://www.virustotal.com/gui/file/093f865d8bd99309ff9b267c374d7c5fbb7cb0f78277f30c1eef1b2a9ca8cde0/details
+	10 https://www.virustotal.com/gui/file/eb80ad769021a5fd1f0808889d71cc54e634a19f3c08f500662dbad83a161e9a/details
+	11 https://www.virustotal.com/gui/file/403a64eb599d2e8ea91775437b682fadc2ecf48b9ab9db5eb42fd710dc1e1957/details
+	12 https://www.virustotal.com/gui/file/529c0a01fe273dc0afcc7fe32424adc548f8fdfb0a79f65feb3139e2269abec2/details
+	13 https://www.virustotal.com/gui/file/6681ce6810cf8b794eb67e567bfcee1c570b968961ed2f8296857cef641767a2/details
+	14 https://www.virustotal.com/gui/file/0ce038048c4b84a73584560cb01a2b063866af5deaf1df06971d75ca872c0857/details
+	15 https://www.virustotal.com/gui/file/7961294133462d6dd2bb24be79746807069ebead1398da444c7835389583cb97/details
+	16 https://www.virustotal.com/gui/file/8ea01d38a9a0d6b45033acbfd159bdcd0c2251736ec565a536abee1a1c6148d4/details
+	17 https://www.virustotal.com/gui/file/252145e2ba05b15265b7a55735fb20d91e6efac02245837405ab2e4fba383a23/details
+	18 https://www.virustotal.com/gui/file/3445a005f355828d20ab46a563fa29c6b1a221bd8df090f5f942480cb5876000/details
+	99 https://www.virustotal.com/gui/file/bc04b410e3fa50e68a3b26f0ef7ad426fa51e1418136bf3f7fda63418d0ecca0/details
+	
+	0 detections, all png files
+
+
+DesktopCompanion\assets\images\nightwear:
+	
+	05 https://www.virustotal.com/gui/file/2fde2285b948af3d1c6c4a01fb2b5d3d95622723f912435cdbe7b7027854a1d3/details
+	06 https://www.virustotal.com/gui/file/64b553220757fc29f60e5b2ab13e6fbc66562e8790ea94d00e00e0e7fc22e549/details
+	00 https://www.virustotal.com/gui/file/64f655e5ff56d9fb722f825bfb135a0d47c8dc99a65682c01f44513ac8792281/details
+	02 https://www.virustotal.com/gui/file/13907bc36888d12a5c07e7d6e0e703348a4fe950ac2ba0902c6fbb9f4e210114/details
+	03 https://www.virustotal.com/gui/file/03ac6dc32f21d725b4891ae524b869b1f45aa579045e24bd1a5bf6f754136772/details
+	99 https://www.virustotal.com/gui/file/79b92cf2b1debbfec42cf9cc9de88226cf892505df1785a41ee13ff649e73107/details
+	04 https://www.virustotal.com/gui/file/916a67f07453c8ce1029427ae837d3dfd130b7af75f96faab31f4ce8528c17ce/details
+
+	0 detections, all png files
+
+
+DesktopCompanion\assets\images\swimsuit:
+
+	00 https://www.virustotal.com/gui/file/3e7e6544cd5fa208e4cd89786b910f7a2932fff6be7751f7bde089982aec1f19/details
+	01 https://www.virustotal.com/gui/file/dcdca50499bcba023ce4944e5df18f4337b42f6732850c0e58cea9cf4c8b3041/details
+	02 https://www.virustotal.com/gui/file/70e5c9451d4d8f39064f418e8ddc93c9b34f97dc12e7d463fa0496a9b03c5cb5/details
+	03 https://www.virustotal.com/gui/file/08d477c56b957e72a08040befb0f39554753a20d58e5aef8210fea8a13c6772b/details
+	04 https://www.virustotal.com/gui/file/2e01c2868f77bbdc0f48c48a86e330122e727aace8d160e64fecec2c5bddab24/details
+	05 https://www.virustotal.com/gui/file/94ed359c890319a58eaee613e6f1efb88e1c7af5c59a68dc2f479917fc156af6/details
+	06 https://www.virustotal.com/gui/file/9db9b94a284d7fc8af7f52cfc1a8a1a0bb624a8cd61d5f7c84f9c44f5ed471ac/details
+	07 https://www.virustotal.com/gui/file/344b3a51bf34bac2acd26b7f77d9a71055bc2b9b524ae36de32a2902aa761597/details
+	08 https://www.virustotal.com/gui/file/d9c7e2d946995ee25b493d83ed276f0f9fc0013f2f700c37c7dbf09bf864b2e5/details
+	09 https://www.virustotal.com/gui/file/f7edd916b348f568dbc1c295174ab35c8af6fb4e7865cbbc40eddfa857ec2824/details
+	10 https://www.virustotal.com/gui/file/d0e4f553e52ac1ca3a9341f249b222c2a767e85883c9a6cfb46779bdcd881696/details
+	99 https://www.virustotal.com/gui/file/0123a9e71a1566c8cd16e84fedfb2bc19acbb459fcd12a5cdd736b59f79fffe5/details
+
+	0 detections, all png files
+
+
+
+
+
+All images downloaded from https://bluearchive.wiki/wiki/Category:Character_sprites
+
+
+
+
+
+
+	

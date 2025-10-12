@@ -167,6 +167,13 @@ struct Dialog
 {
 	std::string text;
 	Mood requiredMood;
+
+	Shapes::Rectangle* placeClicked;
+
+	std::string GetDialogForMood()
+	{
+
+	}
 };
 
 struct MoodImages

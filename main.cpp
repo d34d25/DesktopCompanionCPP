@@ -15,6 +15,12 @@ float hinaScale = 1.0f;
 
 Variant newVariant;
 
+bool clickedInHead = false;
+bool clickedInChest = false;
+bool clickedInBelly = false;
+bool clickedInThighs = false;
+bool clickedInLegs = false;
+
 Input* globalInput = nullptr;
 
 bool clicked = false;
@@ -29,8 +35,13 @@ float offsetNumX, offsetNumY;
 
 Button scaleUpBtn;
 Button scaleDownBtn;
+
 Button baseBtn;
 Button nightwearBtn;
+Button dressBtn;
+Button swimsuitBtn;
+
+Button closeBtn;
 
 void ResizeClRect(Image* img)
 {
@@ -77,14 +88,43 @@ void UpdateScaleForVariant()
 
 void Update()
 {
-
-
-	if (clicked)
+	if (hinature)
 	{
-		hinature->ChangeMood(Mood::EMBARRASSED, 1.0f);
-	}
+		Mood newMood = Mood::NEUTRAL;
 
-	hinature->UpdateTimer();
+		if (clickedInHead)
+		{
+			newMood = hinature->PickMoodByProbabilty(hinature->headMoods);
+			hinature->ChangeMood(newMood, 1.0f);
+		}
+		else if (clickedInChest)
+		{
+			newMood = hinature->PickMoodByProbabilty(hinature->chestMoods);
+			hinature->ChangeMood(newMood, 1.0f);
+		}
+		else if (clickedInBelly)
+		{
+			newMood = hinature->PickMoodByProbabilty(hinature->bellyMoods);
+			hinature->ChangeMood(newMood, 1.0f);
+		}
+		else if (clickedInThighs)
+		{
+			newMood = hinature->PickMoodByProbabilty(hinature->thighsMoods);
+			hinature->ChangeMood(newMood, 1.0f);
+		}
+		else if (clickedInLegs)
+		{
+			newMood = hinature->PickMoodByProbabilty(hinature->legMoods);
+			hinature->ChangeMood(newMood, 1.0f);
+		}
+		else if (clicked)
+		{
+			hinature->ChangeMood(newMood, 1.0f);
+		}
+
+		hinature->UpdateTimer();
+	}
+	
 }
 
 void mDraw(NewCanvasX* canvas)
@@ -125,11 +165,11 @@ void mDraw(NewCanvasX* canvas)
 
 		Image* currImg = hinature->GetCurrentImage();
 
-		float drawX = clRect.x + (clRect.width * 0.5f) - (currImg->width * hinaScale * 0.5f) + offsetX;
-		float drawY = clRect.y + (clRect.height * 0.5f) - (currImg->height * hinaScale * 0.5f) + offsetY;
-
 		if (currImg) 
 		{
+			float drawX = clRect.x + (clRect.width * 0.5f) - (currImg->width * hinaScale * 0.5f) + offsetX;
+			float drawY = clRect.y + (clRect.height * 0.5f) - (currImg->height * hinaScale * 0.5f) + offsetY;
+
 			if (currImg->isValid())
 			{
 				canvas->DrawImg(*currImg, drawX, drawY, nullptr, 0.0f, hinaScale, hinaScale);
@@ -138,60 +178,61 @@ void mDraw(NewCanvasX* canvas)
 
 		canvas->DrawCir(scaleUpBtn.button, scaleUpBtn.element.uiColor);
 
-		Shapes::Rectangle scaleUpText = SetButtonTextArea(scaleUpBtn, 
+		Shapes::Rectangle scaleUpTextArea = SetButtonTextArea(scaleUpBtn, 
 			scaleUpBtn.button.radius * 0.5f -1.0f,
 			-scaleUpBtn.button.radius * 0.25);
 
-		canvas->DrawTxt(scaleUpBtn.text, scaleUpText, { 255,255,255, scaleUpBtn.element.uiColor.a });
+		canvas->DrawTxt(scaleUpBtn.text, scaleUpTextArea, { 255,255,255, scaleUpBtn.element.uiColor.a });
 
 		canvas->DrawCir(scaleDownBtn.button, scaleUpBtn.element.uiColor);
 
-		Shapes::Rectangle scaleDownText = SetButtonTextArea(scaleDownBtn,
+		Shapes::Rectangle scaleDownTextArea = SetButtonTextArea(scaleDownBtn,
 			scaleDownBtn.button.radius * 0.5f + 2.5f,
 			-scaleDownBtn.button.radius * 0.25f);
 
-		canvas->DrawTxt(scaleDownBtn.text, scaleDownText, { 255,255,255, scaleDownBtn.element.uiColor.a });
+		canvas->DrawTxt(scaleDownBtn.text, scaleDownTextArea, { 255,255,255, scaleDownBtn.element.uiColor.a });
 
 		canvas->DrawCir(baseBtn.button, baseBtn.element.uiColor);
 
-		Shapes::Rectangle baseBtnText = SetButtonTextArea(baseBtn,
+		Shapes::Rectangle baseBtnTextArea = SetButtonTextArea(baseBtn,
 			baseBtn.button.radius * 0.5f,
 			-baseBtn.button.radius * 0.25f);
 
-		canvas->DrawTxt(baseBtn.text, baseBtnText, { 255,255,255,baseBtn.element.uiColor.a });
+		canvas->DrawTxt(baseBtn.text, baseBtnTextArea, { 255,255,255,baseBtn.element.uiColor.a });
 
 		canvas->DrawCir(nightwearBtn.button, nightwearBtn.element.uiColor);
 
-		Shapes::Rectangle nightwearBtnText = SetButtonTextArea(nightwearBtn,
+		Shapes::Rectangle nightwearBtnTextArea = SetButtonTextArea(nightwearBtn,
 			nightwearBtn.button.radius * 0.5f,
 			-nightwearBtn.button.radius * 0.25f);
-		canvas->DrawTxt(nightwearBtn.text, nightwearBtnText, { 255,255,255, nightwearBtn.element.uiColor.a });
+		canvas->DrawTxt(nightwearBtn.text, nightwearBtnTextArea, { 255,255,255, nightwearBtn.element.uiColor.a });
 
-		//debug draw (temporal)
+		canvas->DrawCir(closeBtn.button, closeBtn.element.uiColor);
 
-		Shapes::Circle drawCircle;
-		drawCircle.radius = 10;
-		drawCircle.x = drawX;
-		drawCircle.y = drawY;
+		Shapes::Rectangle closeBtnTextArea = SetButtonTextArea(closeBtn,
+			closeBtn.button.radius * 0.5f,
+			-closeBtn.button.radius * 0.25f);
+		canvas->DrawTxt(closeBtn.text, closeBtnTextArea, { 255,255,255,closeBtn.element.uiColor.a });
 
-		//canvas->DrawCir(drawCircle, { 0,255,0,255 });
+		canvas->DrawCir(dressBtn.button, dressBtn.element.uiColor);
 
-		Shapes::Circle rectCircle;
-		drawCircle.radius = 10;
-		drawCircle.x = clRect.x;
-		drawCircle.y = clRect.y;
+		Shapes::Rectangle dressBtnTextArea = SetButtonTextArea(dressBtn,
+			dressBtn.button.radius * 0.5f,
+			-dressBtn.button.radius * 0.25f);
+		canvas->DrawTxt(dressBtn.text, dressBtnTextArea, { 255,255,255,dressBtn.element.uiColor.a });
 
-		//canvas->DrawCir(drawCircle, { 255,255,0,255 });
+		canvas->DrawCir(swimsuitBtn.button, swimsuitBtn.element.uiColor);
 
-		Shapes::Rectangle imgRect;
+		Shapes::Rectangle swimsuitBtnTextArea = SetButtonTextArea(swimsuitBtn,
+			swimsuitBtn.button.radius * 0.5f,
+			-swimsuitBtn.button.radius * 0.25f);
+		canvas->DrawTxt(swimsuitBtn.text, swimsuitBtnTextArea, { 255,255,255,swimsuitBtn.element.uiColor.a });
 
-		imgRect.x = drawX;
-		imgRect.y = drawY;
-
-		imgRect.width = currImg->width * hinaScale;
-		imgRect.height = currImg->height * hinaScale;
-
-		//canvas->DrawRectO(imgRect, { 255,0,0,255 });
+		/*canvas->DrawRectO(hinature->regions.head, {255,0,255,255});
+		canvas->DrawRectO(hinature->regions.chest, { 255,255,0,255 });
+		canvas->DrawRectO(hinature->regions.belly, { 255,0,0,255 });
+		canvas->DrawRectO(hinature->regions.thighs, { 0,0,255,255 });
+		canvas->DrawRectO(hinature->regions.legs, { 0,255,0,255 });*/
 	}
 
 	//canvas->DrawRect(clRect, rectCl);
@@ -222,45 +263,70 @@ int main()
 	clRect.x = screenW - clRect.width;
 	clRect.y = screenH - clRect.height;
 
+	hinature->UpdateRegions(clRect);
+
 	pWindow->SetNewDrawCallback(mDraw);
 
 	globalInput = new Input(pWindow->GetHWND());
 
+	int btnRadius = 15;
+
 	scaleUpBtn = Button();
-	scaleUpBtn.button.radius = 15;
+	scaleUpBtn.button.radius = btnRadius;
 
 	const int buttonSpacing = 10;
-	const int buttonDiameter = scaleUpBtn.button.radius * 2;
+	const int buttonDiameter = btnRadius * 2;
 
 	int baseY = buttonDiameter + buttonSpacing;
 
 	scaleUpBtn.element.hitbox = CalculateBtnRect(scaleUpBtn.button);
-	scaleUpBtn.element.uiColor = { 100,100,255,0 };
+	scaleUpBtn.element.uiColor = { 100,100,255,50 };
 	scaleUpBtn.text = "+";
 
 	scaleDownBtn = Button();
-	scaleDownBtn.button.radius = 15;
+	scaleDownBtn.button.radius = btnRadius;
 	scaleDownBtn.element.hitbox = CalculateBtnRect(scaleDownBtn.button);
-	scaleDownBtn.element.uiColor = { 100,100,255,0 };
+	scaleDownBtn.element.uiColor = { 100,100,255,50 };
 	scaleDownBtn.text = "-";
 
 	baseBtn = Button();
-	baseBtn.button.radius = 15;
+	baseBtn.button.radius = btnRadius;
 	baseBtn.element.hitbox = CalculateBtnRect(baseBtn.button);
-	baseBtn.element.uiColor = { 255,100,255,0 };
+	baseBtn.element.uiColor = { 255,100,255,50 };
 	baseBtn.text = "0";
 
 	nightwearBtn = Button();
-	nightwearBtn.button.radius = 15;
+	nightwearBtn.button.radius = btnRadius;
 	nightwearBtn.element.hitbox = CalculateBtnRect(nightwearBtn.button);
-	nightwearBtn.element.uiColor = { 255,255,100,0 };
+	nightwearBtn.element.uiColor = { 255,255,100,50 };
 	nightwearBtn.text = "1";
+
+	dressBtn = Button();
+	dressBtn.button.radius = btnRadius;
+	dressBtn.element.hitbox = CalculateBtnRect(dressBtn.button);
+	dressBtn.element.uiColor = { 94,0,148,50 };
+	dressBtn.text = "2";
+
+	swimsuitBtn = Button();
+	swimsuitBtn.button.radius = btnRadius;
+	swimsuitBtn.element.hitbox = CalculateBtnRect(swimsuitBtn.button);
+	swimsuitBtn.element.uiColor = { 0,0,100,50 };
+	swimsuitBtn.text = "3";
+
+	closeBtn = Button();
+	closeBtn.button.radius = btnRadius;
+	closeBtn.element.hitbox = CalculateBtnRect(closeBtn.button);
+	closeBtn.element.uiColor = { 255,0,0,50 };
+	closeBtn.text = "X";
 
 	// First button at y = 30 + 10 = 40
 	SetBtnPos(scaleUpBtn, clRect, buttonDiameter, baseY); 
 	SetBtnPos(scaleDownBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 1);
 	SetBtnPos(baseBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 2);
 	SetBtnPos(nightwearBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 3);
+	SetBtnPos(dressBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 4);
+	SetBtnPos(swimsuitBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 5);
+	SetBtnPos(closeBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 6);
 
 	auto UpdateButtonsAndRect = [&]() {
 		ResizeClRect(hinature->GetCurrentImage());
@@ -268,7 +334,11 @@ int main()
 		SetBtnPos(scaleDownBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 1);
 		SetBtnPos(baseBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 2);
 		SetBtnPos(nightwearBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 3);
-		};
+		SetBtnPos(dressBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 4);
+		SetBtnPos(swimsuitBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 5);
+		SetBtnPos(closeBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 6);
+		hinature->UpdateRegions(clRect);
+	};
 
 	bool running = true;
 
@@ -284,11 +354,17 @@ int main()
 
 		bool mouseInScaleUpBtnArea = IsPointOnRect(mousePos, scaleUpBtn.element.hitbox);
 		bool mouseInScaleDownBtnArea = IsPointOnRect(mousePos, scaleDownBtn.element.hitbox);
+
 		bool mouseInBaseBtnArea = IsPointOnRect(mousePos, baseBtn.element.hitbox);
 		bool mouseInNightwearBtnArea = IsPointOnRect(mousePos, nightwearBtn.element.hitbox);
+		bool mouseInDressBtnArea = IsPointOnRect(mousePos, dressBtn.element.hitbox);
+		bool mouseInSwimsuitBtnArea = IsPointOnRect(mousePos, swimsuitBtn.element.hitbox);
+
+		bool mouseInCloseBtnArea = IsPointOnRect(mousePos, closeBtn.element.hitbox);
 
 		bool mouseInButton = mouseInScaleUpBtnArea || mouseInScaleDownBtnArea ||
-			mouseInBaseBtnArea || mouseInNightwearBtnArea;
+			mouseInBaseBtnArea || mouseInNightwearBtnArea ||mouseInDressBtnArea || 
+			mouseInSwimsuitBtnArea ||mouseInCloseBtnArea;
 
 		bool leftMousePressed = globalInput->IsLeftMousePressed();
 
@@ -297,6 +373,16 @@ int main()
 		bool middleMousePressed = globalInput->IsMiddleMousePressed();
 
 		bool middleMouseReleased = globalInput->IsMiddleMouseReleased();
+
+		if (hinature)
+		{
+			clickedInHead = IsPointOnRect(mousePos, hinature->regions.head) && leftMousePressed;
+			clickedInChest = IsPointOnRect(mousePos, hinature->regions.chest) && leftMousePressed;
+			clickedInBelly = IsPointOnRect(mousePos, hinature->regions.belly) && leftMousePressed;
+			clickedInThighs = IsPointOnRect(mousePos, hinature->regions.thighs) && leftMousePressed;
+			clickedInLegs = IsPointOnRect(mousePos, hinature->regions.legs) && leftMousePressed;
+		}
+		
 
 		if (mouseInClickableArea || mouseInButton)
 		{
@@ -342,15 +428,25 @@ int main()
 		{
 			scaleUpBtn.element.uiColor.a = 180;
 			scaleDownBtn.element.uiColor.a = 180;
+
 			baseBtn.element.uiColor.a = 180;
 			nightwearBtn.element.uiColor.a = 180;
+			dressBtn.element.uiColor.a = 180;
+			swimsuitBtn.element.uiColor.a = 180;
+
+			closeBtn.element.uiColor.a = 180;
 		}
 		else
 		{
 			scaleUpBtn.element.uiColor.a = 50;
 			scaleDownBtn.element.uiColor.a = 50;
+
 			baseBtn.element.uiColor.a = 50;
 			nightwearBtn.element.uiColor.a = 50;
+			dressBtn.element.uiColor.a = 50;
+			swimsuitBtn.element.uiColor.a = 50;
+
+			closeBtn.element.uiColor.a = 50;
 		}
 
 		if (mouseInScaleUpBtnArea && leftMousePressed)
@@ -384,6 +480,24 @@ int main()
 			UpdateButtonsAndRect();
 		}
 
+		if (mouseInDressBtnArea && leftMousePressed)
+		{
+			//hinature->ChangeVariant(Variant::DRESS);
+
+			//UpdateScaleForVariant();
+
+			//UpdateButtonsAndRect();
+		}
+
+		if (mouseInSwimsuitBtnArea && leftMousePressed)
+		{
+			//hinature->ChangeVariant(Variant::SWIMSUIT);
+
+			//UpdateScaleForVariant();
+
+			//UpdateButtonsAndRect();
+		}
+
 		if (dragging)
 		{
 			clRect.x = (mousePos.x - clRect.width * 0.5f);
@@ -392,6 +506,10 @@ int main()
 			UpdateButtonsAndRect();
 		}
 
+		if (mouseInCloseBtnArea && leftMousePressed)
+		{
+			//close program
+		}
 		
 		Update();
 
