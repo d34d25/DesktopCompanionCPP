@@ -139,17 +139,16 @@ constexpr auto m_min(const T1& a, const T2& b)
 
 using ImageList = std::vector<Image*>;
 
-
 enum class Mood
 {
 	HAPPY,
-	VERYHAPPY,
+	VERY_HAPPY,
 	ANGRY,
-	VERYANGRY,
+	VERY_ANGRY,
 	EMBARRASSED,
-	VERYEMBARRASSED,
+	VERY_EMBARRASSED,
 	ANNOYED,
-	VERYANNOYED,
+	VERY_ANNOYED,
 	SURPRISED,
 	NEUTRAL,
 	IDLE
@@ -163,16 +162,91 @@ enum class Variant
 	DRESS
 };
 
-struct Dialog
+enum class Place
 {
-	std::string text;
-	Mood requiredMood;
+	HEAD,
+	CHEST,
+	BELLY,
+	THIGHS,
+	LEGS,
+	NONE
+};
 
-	Shapes::Rectangle* placeClicked;
+using DialogList = std::vector<std::string>;
 
-	std::string GetDialogForMood()
+struct DialogManager
+{
+	std::map<std::pair<Mood, Place>, DialogList> dialogsByMoodAndPlace;
+	std::map<Mood, DialogList> globalDialogsByMood;
+
+	bool isGlobalDialog;
+
+	std::string GetRandDialogForMoodAndPlace(Mood mood, Place place)
 	{
+		static bool dSeeded = false;
 
+		if (!dSeeded)
+		{
+			std::srand(static_cast<unsigned>(std::time(0)));
+			dSeeded = true;
+		}
+
+		bool pickGlobalDialog = (std::rand() % 2 == 0);
+
+		if (pickGlobalDialog)
+		{
+			isGlobalDialog = true;
+
+			auto globalIt = globalDialogsByMood.find(mood);
+
+			if (globalIt != globalDialogsByMood.end() && !globalIt->second.empty())
+			{
+				const DialogList& dialogs = globalIt->second;
+
+				int randomIndex = std::rand() % dialogs.size();
+
+				return dialogs[randomIndex];
+			}
+
+		}
+		else
+		{
+			isGlobalDialog = false;
+
+			auto it = dialogsByMoodAndPlace.find({ mood,place });
+
+			if (it != dialogsByMoodAndPlace.end() && !it->second.empty())
+			{
+				const DialogList& dialogs = it->second;
+
+				int randomIndex = std::rand() % dialogs.size();
+
+				return dialogs[randomIndex];
+			}
+			else
+			{
+				isGlobalDialog = true;
+
+				auto globalIt = globalDialogsByMood.find(mood);
+
+				if (globalIt != globalDialogsByMood.end() && !globalIt->second.empty())
+				{
+					const DialogList& dialogs = globalIt->second;
+
+					int randomIndex = std::rand() % dialogs.size();
+
+					return dialogs[randomIndex];
+				}
+			}
+		}
+
+		return "";
+	}
+
+	void InitializeTestDialogs();
+
+	~DialogManager()
+	{
 	}
 };
 

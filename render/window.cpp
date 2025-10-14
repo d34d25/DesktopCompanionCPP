@@ -62,7 +62,7 @@ Window::Window(int width, int height):
 
 	wndClass.hIcon = LoadIcon(NULL, IDI_WINLOGO);
 
-	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wndClass.hCursor = LoadCursor(NULL, IDC_HAND);
 
 	wndClass.lpfnWndProc = WindowProc;
 

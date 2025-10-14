@@ -90,39 +90,46 @@ void Update()
 {
 	if (hinature)
 	{
+		Place currentPlace = Place::NONE;
 		Mood newMood = Mood::NEUTRAL;
 
 		if (clickedInHead)
 		{
+			currentPlace = Place::HEAD;
 			newMood = hinature->PickMoodByProbabilty(hinature->headMoods);
-			hinature->ChangeMood(newMood, 1.0f);
+			hinature->ChangeMood(newMood, currentPlace, 1.0f);
 		}
 		else if (clickedInChest)
 		{
+			currentPlace = Place::CHEST;
 			newMood = hinature->PickMoodByProbabilty(hinature->chestMoods);
-			hinature->ChangeMood(newMood, 1.0f);
+			hinature->ChangeMood(newMood, currentPlace, 1.0f);
 		}
 		else if (clickedInBelly)
 		{
+			currentPlace = Place::BELLY;
 			newMood = hinature->PickMoodByProbabilty(hinature->bellyMoods);
-			hinature->ChangeMood(newMood, 1.0f);
+			hinature->ChangeMood(newMood, currentPlace, 1.0f);
 		}
 		else if (clickedInThighs)
 		{
+			currentPlace = Place::THIGHS;
 			newMood = hinature->PickMoodByProbabilty(hinature->thighsMoods);
-			hinature->ChangeMood(newMood, 1.0f);
+			hinature->ChangeMood(newMood, currentPlace, 1.0f);
 		}
 		else if (clickedInLegs)
 		{
+			currentPlace = Place::LEGS;
 			newMood = hinature->PickMoodByProbabilty(hinature->legMoods);
-			hinature->ChangeMood(newMood, 1.0f);
+			hinature->ChangeMood(newMood, currentPlace, 1.0f);
 		}
 		else if (clicked)
 		{
-			hinature->ChangeMood(newMood, 1.0f);
+			currentPlace = Place::NONE;
+			hinature->ChangeMood(newMood, currentPlace ,1.0f);
 		}
 
-		hinature->UpdateTimer();
+		hinature->UpdateTimer(&currentPlace);
 	}
 	
 }
@@ -228,6 +235,9 @@ void mDraw(NewCanvasX* canvas)
 			-swimsuitBtn.button.radius * 0.25f);
 		canvas->DrawTxt(swimsuitBtn.text, swimsuitBtnTextArea, { 255,255,255,swimsuitBtn.element.uiColor.a });
 
+
+		//debug drawing
+
 		/*canvas->DrawRectO(hinature->regions.head, {255,0,255,255});
 		canvas->DrawRectO(hinature->regions.chest, { 255,255,0,255 });
 		canvas->DrawRectO(hinature->regions.belly, { 255,0,0,255 });
@@ -235,6 +245,7 @@ void mDraw(NewCanvasX* canvas)
 		canvas->DrawRectO(hinature->regions.legs, { 0,255,0,255 });*/
 	}
 
+	//debug drawing
 	//canvas->DrawRect(clRect, rectCl);
 
 
@@ -374,14 +385,11 @@ int main()
 
 		bool middleMouseReleased = globalInput->IsMiddleMouseReleased();
 
-		if (hinature)
-		{
-			clickedInHead = IsPointOnRect(mousePos, hinature->regions.head) && leftMousePressed;
-			clickedInChest = IsPointOnRect(mousePos, hinature->regions.chest) && leftMousePressed;
-			clickedInBelly = IsPointOnRect(mousePos, hinature->regions.belly) && leftMousePressed;
-			clickedInThighs = IsPointOnRect(mousePos, hinature->regions.thighs) && leftMousePressed;
-			clickedInLegs = IsPointOnRect(mousePos, hinature->regions.legs) && leftMousePressed;
-		}
+		clickedInHead = IsPointOnRect(mousePos, hinature->regions.head) && leftMousePressed;
+		clickedInChest = IsPointOnRect(mousePos, hinature->regions.chest) && leftMousePressed;
+		clickedInBelly = IsPointOnRect(mousePos, hinature->regions.belly) && leftMousePressed;
+		clickedInThighs = IsPointOnRect(mousePos, hinature->regions.thighs) && leftMousePressed;
+		clickedInLegs = IsPointOnRect(mousePos, hinature->regions.legs) && leftMousePressed;
 		
 
 		if (mouseInClickableArea || mouseInButton)

@@ -44,23 +44,29 @@ private:
     float moodDuration = 1.2f;
 
     Mood defaultMood = Mood::IDLE;
-
-    std::vector<Dialog> dialogs;
+    Place defaultPlace = Place::NONE;
 
     NewCanvasX* canvas;
 
     MoodImages LoadImagesFromFolder(const std::string& folderPath);
 
+    std::string LoadDialogFromFile(const std::string& filepath);
+
+    DialogManager LoadDialogsFromFolder(const std::string& folderPath);
+
     void Initialize(Variant variant);
 
     std::vector<LoadedImage> loadedImages;
 
-    std::map<Variant, MoodImages> variants;
+    std::map<Variant, MoodImages> variantsImg;
+    std::map<Variant, DialogManager> variantDialog;
 
     Mood currentMood;
     Variant currentVariant;
 
     Image* currentImage;
+    
+    Place currentPlace;
 
     CompanionRegionProportions proportion = {};
     CompanionRegionProportions offset = {};
@@ -68,6 +74,9 @@ private:
     Image* fallbackImage = nullptr;
 
 public:
+
+    std::string currentDialog;
+    //DialogManager dialogManager;
 
     std::vector<std::pair<Mood, float>> headMoods;
     std::vector<std::pair<Mood, float>> chestMoods;
@@ -81,15 +90,17 @@ public:
 
     void UpdateRegions(const Shapes::Rectangle& refRect);
 
-    void ChangeMood(Mood mood, float duration);
+    void ChangeMood(Mood mood, Place place, float duration);
 
     void ChangeVariant(Variant variant);
 
     Mood PickMoodByProbabilty(const std::vector<std::pair<Mood, float>>& moodList);
 
-    void UpdateTimer();
+    void UpdateTimer(Place* place);
 
     Image* GetCurrentImage() const;
 
     Variant GetCurrentVariant() const;
+
+    std::string PickDialog(Mood mood, Place place);
 };

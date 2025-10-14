@@ -3,17 +3,98 @@
 #include <filesystem>
 
 const std::map<std::string, Mood> moodMap = {
+
 	{"HAPPY", Mood::HAPPY},
-	{"VERYHAPPY", Mood::VERYHAPPY},
+	{"VERY_HAPPY", Mood::VERY_HAPPY},
+
 	{"ANGRY", Mood::ANGRY},
-	{"VERYANGRY", Mood::VERYANGRY},
+	{"VERY_ANGRY", Mood::VERY_ANGRY},
+
 	{"EMBARRASSED", Mood::EMBARRASSED},
-	{"VERYEMBARRASSED", Mood::VERYEMBARRASSED},
+	{"VERY_EMBARRASSED", Mood::VERY_EMBARRASSED},
+
 	{"ANNOYED", Mood::ANNOYED},
-	{"VERYANNOYED", Mood::VERYANNOYED},
+	{"VERY_ANNOYED", Mood::VERY_ANNOYED},
+
 	{"SURPRISED", Mood::SURPRISED},
+
 	{"NEUTRAL", Mood::NEUTRAL},
+
 	{"IDLE", Mood::IDLE}
+};
+
+const std::map<std::string, std::pair<Mood, Place>> dialogMap = {
+
+	{"HAPPY_HEAD", {Mood::HAPPY, Place::HEAD} },
+	{"HAPPY_CHEST", {Mood::HAPPY, Place::CHEST} },
+	{"HAPPY_BELLY", {Mood::HAPPY, Place::BELLY} },
+	{"HAPPY_THIGHS", {Mood::HAPPY, Place::THIGHS} },
+	{"HAPPY_LEGS", {Mood::HAPPY, Place::LEGS} },
+	{"HAPPY_NONE", {Mood::HAPPY, Place::NONE} },
+
+	{"VERY_HAPPY_HEAD", {Mood::VERY_HAPPY, Place::HEAD} },
+	{"VERY_HAPPY_CHEST", {Mood::VERY_HAPPY, Place::CHEST} },
+	{"VERY_HAPPY_BELLY", {Mood::VERY_HAPPY, Place::BELLY} },
+	{"VERY_HAPPY_THIGHS", {Mood::VERY_HAPPY, Place::THIGHS} },
+	{"VERY_HAPPY_LEGS", {Mood::VERY_HAPPY, Place::LEGS} },
+	{"VERY_HAPPY_NONE", {Mood::VERY_HAPPY, Place::NONE} },
+
+	{"ANGRY_HEAD",{Mood::ANGRY, Place::HEAD}},
+	{"ANGRY_CHEST",{Mood::ANGRY, Place::CHEST}},
+	{"ANGRY_BELLY",{Mood::ANGRY, Place::BELLY}},
+	{"ANGRY_THIGHS",{Mood::ANGRY, Place::THIGHS}},
+	{"ANGRY_LEGS",{Mood::ANGRY, Place::LEGS}},
+	{"ANGRY_NONE",{Mood::ANGRY, Place::NONE}},
+
+	{"VERY_ANGRY_HEAD",{Mood::VERY_ANGRY, Place::HEAD}},
+	{"VERY_ANGRY_CHEST",{Mood::VERY_ANGRY, Place::CHEST}},
+	{"VERY_ANGRY_BELLY",{Mood::VERY_ANGRY, Place::BELLY}},
+	{"VERY_ANGRY_THIGHS",{Mood::VERY_ANGRY, Place::THIGHS}},
+	{"VERY_ANGRY_LEGS",{Mood::VERY_ANGRY, Place::LEGS}},
+	{"VERY_ANGRY_NONE",{Mood::VERY_ANGRY, Place::NONE}},
+
+	{"EMBARRASSED_HEAD",{Mood::EMBARRASSED, Place::HEAD}},
+	{"EMBARRASSED_CHEST",{Mood::EMBARRASSED, Place::CHEST}},
+	{"EMBARRASSED_BELLY",{Mood::EMBARRASSED, Place::BELLY}},
+	{"EMBARRASSED_THIGHS",{Mood::EMBARRASSED, Place::THIGHS}},
+	{"EMBARRASSED_LEGS",{Mood::EMBARRASSED, Place::LEGS}},
+	{"EMBARRASSED_NONE",{Mood::EMBARRASSED, Place::NONE}},
+
+	{"VERY_EMBARRASSED_HEAD",{Mood::VERY_EMBARRASSED, Place::HEAD}},
+	{"VERY_EMBARRASSED_CHEST",{Mood::VERY_EMBARRASSED, Place::CHEST}},
+	{"VERY_EMBARRASSED_BELLY",{Mood::VERY_EMBARRASSED, Place::BELLY}},
+	{"VERY_EMBARRASSED_THIGHS",{Mood::VERY_EMBARRASSED, Place::THIGHS}},
+	{"VERY_EMBARRASSED_LEGS",{Mood::VERY_EMBARRASSED, Place::LEGS}},
+	{"VERY_EMBARRASSED_NONE",{Mood::VERY_EMBARRASSED, Place::NONE}},
+
+	{"ANNOYED_HEAD",{Mood::ANNOYED, Place::HEAD}},
+	{"ANNOYED_CHEST",{Mood::ANNOYED, Place::CHEST}},
+	{"ANNOYED_BELLY",{Mood::ANNOYED, Place::BELLY}},
+	{"ANNOYED_THIGHS",{Mood::ANNOYED, Place::THIGHS}},
+	{"ANNOYED_LEGS",{Mood::ANNOYED, Place::LEGS}},
+	{"ANNOYED_NONE",{Mood::ANNOYED, Place::NONE}},
+
+	{"VERY_ANNOYED_HEAD",{Mood::VERY_ANNOYED, Place::HEAD}},
+	{"VERY_ANNOYED_CHEST",{Mood::VERY_ANNOYED, Place::CHEST}},
+	{"VERY_ANNOYED_BELLY",{Mood::VERY_ANNOYED, Place::BELLY}},
+	{"VERY_ANNOYED_THIGHS",{Mood::VERY_ANNOYED, Place::THIGHS}},
+	{"VERY_ANNOYED_LEGS",{Mood::VERY_ANNOYED, Place::LEGS}},
+	{"VERY_ANNOYED_NONE",{Mood::VERY_ANNOYED, Place::NONE}},
+
+
+	{"SURPRISED_HEAD",{Mood::SURPRISED, Place::HEAD}},
+	{"SURPRISED_CHEST",{Mood::SURPRISED, Place::CHEST}},
+	{"SURPRISED_BELLY",{Mood::SURPRISED, Place::BELLY}},
+	{"SURPRISED_THIGHS",{Mood::SURPRISED, Place::THIGHS}},
+	{"SURPRISED_LEGS",{Mood::SURPRISED, Place::LEGS}},
+	{"SURPRISED_NONE",{Mood::SURPRISED, Place::NONE}},
+
+	{"NEUTRAL_HEAD",{Mood::NEUTRAL, Place::HEAD}},
+	{"NEUTRAL_CHEST",{Mood::NEUTRAL, Place::CHEST}},
+	{"NEUTRAL_BELLY",{Mood::NEUTRAL, Place::BELLY}},
+	{"NEUTRAL_THIGHS",{Mood::NEUTRAL, Place::THIGHS}},
+	{"NEUTRAL_LEGS",{Mood::NEUTRAL, Place::LEGS}},
+	{"NEUTRAL_NONE",{Mood::NEUTRAL, Place::NONE}},
 };
 
 std::string VariantToFolderName(Variant currentVariant)
@@ -33,42 +114,80 @@ Companion::Companion(NewCanvasX* canvas, Variant startVariant)
 	this->canvas = canvas;
 	currentVariant = startVariant;
 	currentMood = defaultMood;
+	currentPlace = defaultPlace;
+
 
 	headMoods = {
-		{Mood::SURPRISED, 0.1f},
 		{Mood::HAPPY, 0.3f},
-		{Mood::VERYHAPPY, 0.2f},
+		{Mood::VERY_HAPPY, 0.2f},
+		{Mood::ANGRY,0.0f},
+		{Mood::VERY_ANGRY, 0.0f},
+		{Mood::EMBARRASSED,0.0f},
+		{Mood::VERY_EMBARRASSED,0.0f},
+		{Mood::ANNOYED, 0.0f},
+		{Mood::VERY_ANNOYED, 0.0f},
+		{Mood::SURPRISED, 0.1f},
 		{Mood::NEUTRAL, 0.4f}
 	};
 
 	chestMoods = {
-		{Mood::EMBARRASSED, 0.3f},
-		{Mood::VERYEMBARRASSED, 0.3f},
+		{Mood::HAPPY, 0.0f},
+		{Mood::VERY_HAPPY, 0.0f},
 		{Mood::ANGRY, 0.3f},
-		{Mood::VERYANGRY, 0.1f}
+		{Mood::VERY_ANGRY, 0.1f},
+		{Mood::EMBARRASSED, 0.3f},
+		{Mood::VERY_EMBARRASSED, 0.3f},
+		{Mood::ANNOYED, 0.0f},
+		{Mood::VERY_ANNOYED, 0.0f},
+		{Mood::SURPRISED, 0.0f},
+		{Mood::NEUTRAL, 0.0f}
 	};
 
 	bellyMoods = {
-		{Mood::NEUTRAL, 0.7f},
+		{Mood::HAPPY, 0.0f},
+		{Mood::VERY_HAPPY, 0.0f},
+		{Mood::ANGRY, 0.0f},
+		{Mood::VERY_ANGRY, 0.0f},
 		{Mood::EMBARRASSED, 0.3f},
+		{Mood::VERY_EMBARRASSED, 0.0f},
+		{Mood::ANNOYED, 0.0f},
+		{Mood::VERY_ANNOYED, 0.0f},
+		{Mood::SURPRISED, 0.0f},
+		{Mood::NEUTRAL, 0.7f}
 	};
 
 	thighsMoods = {
-	{Mood::NEUTRAL, 0.3f},     
-	{Mood::EMBARRASSED, 0.3f},
-	{Mood::ANNOYED, 0.2f},
-	{Mood::ANGRY, 0.1f},
-	{Mood::VERYANGRY, 0.05f},
-	{Mood::VERYANNOYED, 0.05f}
+		{Mood::HAPPY, 0.0f},
+		{Mood::VERY_HAPPY, 0.0f},
+		{Mood::ANGRY, 0.1f},
+		{Mood::VERY_ANGRY, 0.05f},
+		{Mood::EMBARRASSED, 0.3f},
+		{Mood::VERY_EMBARRASSED, 0.0f},
+		{Mood::ANNOYED, 0.2f },
+		{Mood::VERY_ANNOYED, 0.05f},
+		{Mood::SURPRISED, 0.0f},
+		{Mood::NEUTRAL, 0.3f}
 	};
 
 
 	legMoods = {
-		{Mood::NEUTRAL, 1.0f},
+		{Mood::HAPPY, 0.0f},
+		{Mood::VERY_HAPPY, 0.0f},
+		{Mood::ANGRY, 0.0f},
+		{Mood::VERY_ANGRY, 0.0f},
+		{Mood::EMBARRASSED, 0.0f},
+		{Mood::VERY_EMBARRASSED, 0.0f},
+		{Mood::ANNOYED, 0.0f},
+		{Mood::VERY_ANNOYED, 0.0f},
+		{Mood::SURPRISED, 0.0f},
+		{Mood::NEUTRAL, 1.0f}
 	};
 
 	Initialize(startVariant);
+
+	variantDialog[currentVariant].InitializeTestDialogs();
 }
+
 
 void Companion::UpdateRegions(const Shapes::Rectangle& refRect)
 {
@@ -232,6 +351,37 @@ MoodImages Companion::LoadImagesFromFolder(const std::string& folderPath)
 	return moodImages;
 }
 
+std::string Companion::LoadDialogFromFile(const std::string& filepath)
+{
+	/*
+		Extract the prefixes as it was done with images
+	 
+		File Structure for Variant:
+
+		variant/
+			mood1_place1_variant.txt
+			mood1_place2_variant.txt
+			mood2_place1_variant.txt
+			mood2_place2_variant.txt
+
+			global_mood1.txt
+			global_mood2.txt
+	*/
+
+
+	return "";
+}
+
+DialogManager Companion::LoadDialogsFromFolder(const std::string& folderPath)
+{
+	DialogManager dialogManager;
+
+	std::cout << "Current working directory: " << std::filesystem::current_path() << std::endl;
+	
+
+	return DialogManager();
+}
+
 void Companion::Initialize(Variant variant)
 {
 	currentVariant = variant;
@@ -242,11 +392,11 @@ void Companion::Initialize(Variant variant)
 
 	std::string path = "../assets/images/" + folderName;
 
-	variants[currentVariant] = LoadImagesFromFolder(path);
+	variantsImg[currentVariant] = LoadImagesFromFolder(path);
 
-	auto it = variants[currentVariant].imagesByMood.find(currentMood);
+	auto it = variantsImg[currentVariant].imagesByMood.find(currentMood);
 
-	if (it != variants[currentVariant].imagesByMood.end() && !it->second.empty())
+	if (it != variantsImg[currentVariant].imagesByMood.end() && !it->second.empty())
 	{
 		currentImage = it->second.front();
 		
@@ -257,8 +407,8 @@ void Companion::Initialize(Variant variant)
 		currentImage = nullptr;
 	}
 
-	auto fallbackIt = variants[currentVariant].imagesByMood.find(Mood::IDLE);
-	if (fallbackIt != variants[currentVariant].imagesByMood.end() && !fallbackIt->second.empty())
+	auto fallbackIt = variantsImg[currentVariant].imagesByMood.find(Mood::IDLE);
+	if (fallbackIt != variantsImg[currentVariant].imagesByMood.end() && !fallbackIt->second.empty())
 	{
 		fallbackImage = fallbackIt->second.front();
 	}
@@ -266,6 +416,7 @@ void Companion::Initialize(Variant variant)
 	{
 		fallbackImage = nullptr;
 	}
+
 }
 
 void Companion::ChangeVariant(Variant variant)
@@ -293,18 +444,46 @@ Mood Companion::PickMoodByProbabilty(const std::vector<std::pair<Mood, float>>& 
 	return Mood::NEUTRAL;
 }
 
-void Companion::ChangeMood(Mood mood, float duration)
+void Companion::ChangeMood(Mood mood, Place place, float duration)
 {
 	if (mood != currentMood && (moodTimer <= 0.0f))
 	{
 		currentMood = mood;
+		currentPlace = place;
 
-		Image* nImage = variants[currentVariant].GetImageForMood(currentMood);
+		Image* nImage = variantsImg[currentVariant].GetImageForMood(currentMood);
+
+		std::string nDialog = variantDialog[currentVariant].GetRandDialogForMoodAndPlace(currentMood, currentPlace);
+
+		if (nDialog == "")
+		{
+			nDialog = variantDialog[currentVariant].GetRandDialogForMoodAndPlace(Mood::NEUTRAL, currentPlace);
+
+			if (nDialog == "")
+			{
+				nDialog = variantDialog[currentVariant].GetRandDialogForMoodAndPlace(Mood::NEUTRAL, defaultPlace);
+			}
+		}
 
 		if (!nImage)
 		{
+			currentPlace = Place::NONE;
 			currentMood = Mood::NEUTRAL;
-			nImage = variants[currentVariant].GetImageForMood(currentMood);
+			nImage = variantsImg[currentVariant].GetImageForMood(currentMood);
+
+			nDialog = variantDialog[currentVariant].GetRandDialogForMoodAndPlace(currentMood, currentPlace);
+
+			if (nDialog == "")
+			{
+				nDialog = variantDialog[currentVariant].GetRandDialogForMoodAndPlace(Mood::NEUTRAL, currentPlace);
+
+				if (nDialog == "")
+				{
+					nDialog = variantDialog[currentVariant].GetRandDialogForMoodAndPlace(Mood::NEUTRAL, defaultPlace);
+				}
+			}
+
+			currentDialog = nDialog;
 
 			if (!nImage)
 			{
@@ -317,16 +496,18 @@ void Companion::ChangeMood(Mood mood, float duration)
 		}
 		else
 		{
+			currentDialog = nDialog;
 			currentImage = nImage;
 		}
 
-		currentImage = nImage;
+		std::cout << currentDialog <<" " << " is global dialog?: " << variantDialog[currentVariant].isGlobalDialog << "\n";
+
 		moodTimer = duration;
 		moodDuration = duration;
 	}
 }
 
-void Companion::UpdateTimer()
+void Companion::UpdateTimer(Place* place)
 {
 	if (moodTimer > 0.0f)
 	{
@@ -336,9 +517,11 @@ void Companion::UpdateTimer()
 		{
 			currentMood = defaultMood;
 
-			auto it = variants[currentVariant].imagesByMood.find(currentMood);
+			place = &defaultPlace;
 
-			if (it != variants[currentVariant].imagesByMood.end() && !it->second.empty())
+			auto it = variantsImg[currentVariant].imagesByMood.find(currentMood);
+
+			if (it != variantsImg[currentVariant].imagesByMood.end() && !it->second.empty())
 			{
 				currentImage = it->second.front();
 			}
@@ -360,3 +543,9 @@ Variant Companion::GetCurrentVariant() const
 	return this->currentVariant;
 }
 
+std::string Companion::PickDialog(Mood mood, Place place)
+{
+	
+
+	return "";
+}
