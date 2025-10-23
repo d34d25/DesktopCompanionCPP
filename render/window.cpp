@@ -173,9 +173,3 @@ int Window::GetScreenHeight()
 	return this->screenHeight;
 }
 
-
-/*
-
-
-
-*/

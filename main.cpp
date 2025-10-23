@@ -1,9 +1,18 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include "window.h"
 #include <wincodec.h>
 #include "input.h"
 #include "companion.h"
 #include "uiElement.h"
+
+void CreateConsole();
+
+void DeleteConsole();
+
+void ShowConsole();
+
+void HideConsole();
 
 Shapes::Rectangle clRect;
 
@@ -44,6 +53,29 @@ Button swimsuitBtn;
 Button closeBtn;
 
 ConfigFile config;
+
+void CreateConsole()
+{
+	AllocConsole();
+	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
+}
+
+void DeleteConsole()
+{
+	FreeConsole();
+}
+
+void ShowConsole()
+{
+	ShowWindow(GetConsoleWindow(), SW_SHOW);
+}
+
+void HideConsole()
+{
+	ShowWindow(GetConsoleWindow(), SW_HIDE);
+}
+
 
 void ResizeClRect(Image* img)
 {
@@ -265,7 +297,10 @@ void mDraw(NewCanvasX* canvas)
 		canvas->DrawRectO(hinature->regions.legs, { 0,255,0,255 });
 
 		canvas->DrawRect(clRect, rectCl);
+
+		ShowConsole();
 	}
+	
 
 
 	//--------------------------------------------------------------------
@@ -276,8 +311,12 @@ void mDraw(NewCanvasX* canvas)
 
 }
 
-int main()
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	CreateConsole();
+
+	HideConsole();
+
 	config = LoadConfigFile("../config.txt");
 
 	dragging = false;
@@ -545,6 +584,7 @@ int main()
 	}
 
 	
+	DeleteConsole();
 	delete hinature;
 	delete globalInput;
 	delete pWindow;
