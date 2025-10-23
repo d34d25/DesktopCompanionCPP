@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
-
+#include<iostream>
 
 template <typename T>
 void SafeRelease(T** ppT)
@@ -243,8 +243,6 @@ struct DialogManager
 		return "";
 	}
 
-	void InitializeTestDialogs();
-
 	~DialogManager()
 	{
 	}
@@ -282,3 +280,174 @@ struct MoodImages
 std::string ToUpper(const std::string& input);
 
 std::string ExtractPrefix(const std::string& input);
+
+struct CompanionRegionProportions
+{
+	float headX = 0.0f;
+	float chestX = 0.0f;
+	float bellyX = 0.0f;
+	float thighsX = 0.0f;
+	float legsX = 0.0f;
+
+	float headY = 0.0f;
+	float chestY = 0.0f;
+	float bellyY = 0.0f;
+	float thighsY = 0.0f;
+	float legsY = 0.0f;
+};
+
+struct CompanionMoodProbabilities
+{
+	//head moods
+	float happy_head_prob;
+	float very_happy_head_prob;
+
+	float angry_head_prob;
+	float very_angry_head_prob;
+
+	float embarrassed_head_prob;
+	float very_embarrassed_head_prob;
+
+	float annoyed_head_prob;
+	float very_annoyed_head_prob;
+
+	float surprised_head_prob;
+
+	float neutral_head_prob;
+
+	//chest moods
+	float happy_chest_prob;
+	float very_happy_chest_prob;
+
+	float angry_chest_prob;
+	float very_angry_chest_prob;
+
+	float embarrassed_chest_prob;
+	float very_embarrassed_chest_prob;
+
+	float annoyed_chest_prob;
+	float very_annoyed_chest_prob;
+
+	float surprised_chest_prob;
+
+	float neutral_chest_prob;
+
+	//belly moods
+	float happy_belly_prob;
+	float very_happy_belly_prob;
+
+	float angry_belly_prob;
+	float very_angry_belly_prob;
+
+	float embarrassed_belly_prob;
+	float very_embarrassed_belly_prob;
+
+	float annoyed_belly_prob;
+	float very_annoyed_belly_prob;
+
+	float surprised_belly_prob;
+
+	float neutral_belly_prob;
+
+	//thighs moods
+	float happy_thighs_prob;
+	float very_happy_thighs_prob;
+
+	float angry_thighs_prob;
+	float very_angry_thighs_prob;
+
+	float embarrassed_thighs_prob;
+	float very_embarrassed_thighs_prob;
+
+	float annoyed_thighs_prob;
+	float very_annoyed_thighs_prob;
+
+	float surprised_thighs_prob;
+
+	float neutral_thighs_prob;
+
+	//legs moods
+	float happy_legs_prob;
+	float very_happy_legs_prob;
+
+	float angry_legs_prob;
+	float very_angry_legs_prob;
+
+	float embarrassed_legs_prob;
+	float very_embarrassed_legs_prob;
+
+	float annoyed_legs_prob;
+	float very_annoyed_legs_prob;
+
+	float surprised_legs_prob;
+
+	float neutral_legs_prob;
+};
+
+struct ConfigFile
+{
+
+	//companion mood probabilities
+
+	CompanionMoodProbabilities base;
+
+	CompanionMoodProbabilities night;
+
+	CompanionMoodProbabilities dress;
+
+	CompanionMoodProbabilities swim;
+
+	//companion proportions & offsets 
+
+	CompanionRegionProportions base_proportions;
+
+	CompanionRegionProportions night_proportions;
+
+	CompanionRegionProportions dress_proportions;
+
+	CompanionRegionProportions swim_proportions;
+
+
+	CompanionRegionProportions base_offset;
+
+	CompanionRegionProportions night_offset;
+
+	CompanionRegionProportions dress_offset;
+
+	CompanionRegionProportions swim_offset;
+
+	//main.cpp offsets
+
+	//base
+	float base_clRect_offset_x;
+	float base_clRect_offset_y;
+
+	float base_clRect_scale_x;
+	float base_clRect_scale_y;
+
+	//nightwear
+	float night_clRect_offset_x;
+	float night_clRect_offset_y;
+
+	float night_clRect_scale_x;
+	float night_clRect_scale_y;
+
+	//dress
+	float dress_clRect_offset_x;
+	float dress_clRect_offset_y;
+
+	float dress_clRect_scale_x;
+	float dress_clRect_scale_y;
+
+	//swimsuit
+	float swim_clRect_offset_x;
+	float swim_clRect_offset_y;
+
+	float swim_clRect_scale_x;
+	float swim_clRect_scale_y;
+
+	//debug
+	bool debug_draw;
+};
+
+ConfigFile LoadConfigFile(std::string path);

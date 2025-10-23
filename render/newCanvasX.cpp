@@ -34,7 +34,8 @@ D2D_POINT_2F NewCanvasX::nToD2D1Point(const Vector2D& point)
 	return D2D1::Point2F(point.x, point.y);
 }
 
-NewCanvasX::NewCanvasX(HWND window)
+NewCanvasX::NewCanvasX(HWND window):
+	pDWriteFactory(nullptr), pTextFormat(nullptr)
 {
 
 	HR(D3D11CreateDevice(nullptr,
@@ -118,7 +119,7 @@ NewCanvasX::NewCanvasX(HWND window)
 
 	HR(dc->CreateSolidColorBrush(nToD2D1Color(brushColor),
 		brush.GetAddressOf()));
-	
+
 
 
 	//TEXT init
@@ -126,7 +127,7 @@ NewCanvasX::NewCanvasX(HWND window)
 	HRESULT hrWrite = DWriteCreateFactory(
 		DWRITE_FACTORY_TYPE_SHARED,
 		__uuidof(IDWriteFactory),
-		reinterpret_cast<IUnknown**>(&pDWriteFactory)
+		reinterpret_cast<IUnknown**>(pDWriteFactory.GetAddressOf())
 	);
 
 	if (SUCCEEDED(hrWrite))
@@ -144,12 +145,6 @@ NewCanvasX::NewCanvasX(HWND window)
 	}
 
 }
-
-NewCanvasX::~NewCanvasX()
-{
-
-}
-
 
 
 void NewCanvasX::BeginDraw()
@@ -172,7 +167,7 @@ void NewCanvasX::EndDraw()
 	{
 		//std::cerr << "COM Exception caught: " << e.what() << std::endl;
 	}
-	
+
 }
 
 void NewCanvasX::Present()
@@ -186,7 +181,7 @@ void NewCanvasX::Present()
 	{
 		//std::cerr << "COM Exception caught: " << e.what() << std::endl;
 	}
-	
+
 }
 
 void NewCanvasX::nSetBrushColor(Color color)
@@ -645,7 +640,7 @@ void NewCanvasX::DrawTxt(const std::string& text, Shapes::Rectangle textArea, Co
 	dc->DrawTextW(
 		wText.c_str(),
 		(UINT32)wText.length(),
-		pTextFormat,
+		pTextFormat.Get(),
 		layoutRect,
 		brush.Get()
 	);

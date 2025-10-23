@@ -21,20 +21,7 @@ struct CompanionRegion
     Shapes::Rectangle legs;
 };
 
-struct CompanionRegionProportions
-{
-    float headX = 0.0f;
-    float chestX = 0.0f;
-    float bellyX = 0.0f;
-    float thighsX = 0.0f;
-    float legsX = 0.0f;
 
-    float headY = 0.0f;
-    float chestY = 0.0f;
-    float bellyY = 0.0f;
-    float thighsY = 0.0f;
-    float legsY = 0.0f;
-};
 
 class Companion
 {
@@ -50,8 +37,6 @@ private:
 
     MoodImages LoadImagesFromFolder(const std::string& folderPath);
 
-    std::string LoadDialogFromFile(const std::string& filepath);
-
     DialogManager LoadDialogsFromFolder(const std::string& folderPath);
 
     void Initialize(Variant variant);
@@ -65,13 +50,15 @@ private:
     Variant currentVariant;
 
     Image* currentImage;
-    
+
     Place currentPlace;
 
     CompanionRegionProportions proportion = {};
     CompanionRegionProportions offset = {};
 
     Image* fallbackImage = nullptr;
+
+    ConfigFile* configFile = nullptr;
 
 public:
 
@@ -86,7 +73,9 @@ public:
 
     CompanionRegion regions;
 
-    Companion(NewCanvasX* canvas,Variant startVariant);
+    Companion(NewCanvasX* canvas, Variant startVariant, ConfigFile* config);
+
+    ~Companion() = default;
 
     void UpdateRegions(const Shapes::Rectangle& refRect);
 
@@ -102,5 +91,5 @@ public:
 
     Variant GetCurrentVariant() const;
 
-    std::string PickDialog(Mood mood, Place place);
+    void DrawDialog(Shapes::Rectangle* refRect, float scale);
 };

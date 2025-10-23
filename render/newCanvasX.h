@@ -27,7 +27,7 @@ struct ComException : public std::exception
 	std::string message;
 
 	HRESULT result;
-	ComException(HRESULT const value):
+	ComException(HRESULT const value) :
 		result(value)
 	{
 		std::ostringstream oss;
@@ -73,15 +73,15 @@ private:
 
 	Color brushColor;
 
-	IDWriteFactory* pDWriteFactory = nullptr;
+	ComPtr<IDWriteFactory> pDWriteFactory = nullptr;
 
-	IDWriteTextFormat* pTextFormat = nullptr;
+	ComPtr<IDWriteTextFormat> pTextFormat = nullptr;
 
 public:
 
 	NewCanvasX(HWND hwnd);
 
-	~NewCanvasX();
+	~NewCanvasX() = default;
 
 	void BeginDraw();
 
@@ -107,7 +107,7 @@ public:
 	void DrawCir(Shapes::Circle circle, Color color, float angle = 0.0f, float scaleX = 1.0f, float scaleY = 1.0f);
 
 	void DrawTri(Shapes::Triangle triangle, Color color, float angle = 0.0f, float scaleX = 1.0f, float scaleY = 1.0f);
-	
+
 	//outline
 
 	void DrawPolyO(const Vector2D* points, size_t arraySize, Color color);
@@ -117,7 +117,7 @@ public:
 	void DrawCirO(Shapes::Circle circle, Color color, float angle = 0.0f, float scaleX = 1.0f, float scaleY = 1.0f);
 
 	void DrawTriO(Shapes::Triangle triangle, Color color, float angle = 0.0f, float scaleX = 1.0f, float scaleY = 1.0f);
-	
+
 	//image
 
 	Image LoadImg(const std::string& filepath);

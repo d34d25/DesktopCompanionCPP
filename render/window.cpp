@@ -48,7 +48,7 @@ void Draw(HWND hwnd)
 }
 
 
-Window::Window(int width, int height):
+Window::Window(int width, int height) :
 	m_hInstance(GetModuleHandle(nullptr))
 {
 
@@ -112,6 +112,7 @@ Window::~Window()
 {
 	if (this->nCanvas)
 	{
+		delete this->nCanvas;
 		this->nCanvas = nullptr;
 	}
 

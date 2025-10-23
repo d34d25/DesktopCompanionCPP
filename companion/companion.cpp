@@ -1,6 +1,7 @@
 #include "companion.h"
 #include <iostream>
 #include <filesystem>
+#include <fstream>
 
 const std::map<std::string, Mood> moodMap = {
 
@@ -101,91 +102,24 @@ std::string VariantToFolderName(Variant currentVariant)
 {
 	switch (currentVariant)
 	{
-		case Variant::BASE: return "base";
-		case Variant::NIGHTWEAR: return "nightwear";
-		case Variant::SWIMSUIT: return "swimsuit";
-		case Variant::DRESS: return "dress";
-		default: return "unknown";
+	case Variant::BASE: return "base";
+	case Variant::NIGHTWEAR: return "nightwear";
+	case Variant::SWIMSUIT: return "swimsuit";
+	case Variant::DRESS: return "dress";
+	default: return "unknown";
 	}
 }
 
-Companion::Companion(NewCanvasX* canvas, Variant startVariant)
+Companion::Companion(NewCanvasX* canvas, Variant startVariant, ConfigFile* config)
 {
 	this->canvas = canvas;
 	currentVariant = startVariant;
 	currentMood = defaultMood;
 	currentPlace = defaultPlace;
 
-
-	headMoods = {
-		{Mood::HAPPY, 0.3f},
-		{Mood::VERY_HAPPY, 0.2f},
-		{Mood::ANGRY,0.0f},
-		{Mood::VERY_ANGRY, 0.0f},
-		{Mood::EMBARRASSED,0.0f},
-		{Mood::VERY_EMBARRASSED,0.0f},
-		{Mood::ANNOYED, 0.0f},
-		{Mood::VERY_ANNOYED, 0.0f},
-		{Mood::SURPRISED, 0.1f},
-		{Mood::NEUTRAL, 0.4f}
-	};
-
-	chestMoods = {
-		{Mood::HAPPY, 0.0f},
-		{Mood::VERY_HAPPY, 0.0f},
-		{Mood::ANGRY, 0.3f},
-		{Mood::VERY_ANGRY, 0.1f},
-		{Mood::EMBARRASSED, 0.3f},
-		{Mood::VERY_EMBARRASSED, 0.3f},
-		{Mood::ANNOYED, 0.0f},
-		{Mood::VERY_ANNOYED, 0.0f},
-		{Mood::SURPRISED, 0.0f},
-		{Mood::NEUTRAL, 0.0f}
-	};
-
-	bellyMoods = {
-		{Mood::HAPPY, 0.0f},
-		{Mood::VERY_HAPPY, 0.0f},
-		{Mood::ANGRY, 0.0f},
-		{Mood::VERY_ANGRY, 0.0f},
-		{Mood::EMBARRASSED, 0.3f},
-		{Mood::VERY_EMBARRASSED, 0.0f},
-		{Mood::ANNOYED, 0.0f},
-		{Mood::VERY_ANNOYED, 0.0f},
-		{Mood::SURPRISED, 0.0f},
-		{Mood::NEUTRAL, 0.7f}
-	};
-
-	thighsMoods = {
-		{Mood::HAPPY, 0.0f},
-		{Mood::VERY_HAPPY, 0.0f},
-		{Mood::ANGRY, 0.1f},
-		{Mood::VERY_ANGRY, 0.05f},
-		{Mood::EMBARRASSED, 0.3f},
-		{Mood::VERY_EMBARRASSED, 0.0f},
-		{Mood::ANNOYED, 0.2f },
-		{Mood::VERY_ANNOYED, 0.05f},
-		{Mood::SURPRISED, 0.0f},
-		{Mood::NEUTRAL, 0.3f}
-	};
-
-
-	legMoods = {
-		{Mood::HAPPY, 0.0f},
-		{Mood::VERY_HAPPY, 0.0f},
-		{Mood::ANGRY, 0.0f},
-		{Mood::VERY_ANGRY, 0.0f},
-		{Mood::EMBARRASSED, 0.0f},
-		{Mood::VERY_EMBARRASSED, 0.0f},
-		{Mood::ANNOYED, 0.0f},
-		{Mood::VERY_ANNOYED, 0.0f},
-		{Mood::SURPRISED, 0.0f},
-		{Mood::NEUTRAL, 1.0f}
-	};
+	configFile = config;
 
 	Initialize(startVariant);
-
-	variantDialog[currentVariant].InitializeTestDialogs();
 }
 
 
@@ -195,47 +129,111 @@ void Companion::UpdateRegions(const Shapes::Rectangle& refRect)
 	switch (this->GetCurrentVariant())
 	{
 	case Variant::BASE:
-		proportion.headX = 0.6f;
-		proportion.chestX = 0.52f;
-		proportion.bellyX = 0.52f;
-		proportion.thighsX = 0.62f;
-		proportion.legsX = 0.72f;
+		proportion.headX = configFile->base_proportions.headX;
+		proportion.chestX = configFile->base_proportions.chestX;
+		proportion.bellyX = configFile->base_proportions.bellyX;
+		proportion.thighsX = configFile->base_proportions.thighsX;
+		proportion.legsX = configFile->base_proportions.legsX;
 
-		offset.headX = -5.0f;
-		offset.chestX = -10.0f;
-		offset.bellyX = -10.0f;
-		offset.thighsX = -14.0f;
-		offset.legsX = -24.0f;
+		offset.headX = configFile->base_offset.headX;
+		offset.chestX = configFile->base_offset.chestX;
+		offset.bellyX = configFile->base_offset.bellyX;
+		offset.thighsX = configFile->base_offset.thighsX;
+		offset.legsX = configFile->base_offset.legsX;
 
-		proportion.headY = 0.22f;
-		proportion.chestY = 0.075f;
-		proportion.bellyY = 0.08f;
-		proportion.thighsY = 0.15f;
-		proportion.legsY = 0.475f;
+		proportion.headY = configFile->base_proportions.headY;
+		proportion.chestY = configFile->base_proportions.chestY;
+		proportion.bellyY = configFile->base_proportions.bellyY;
+		proportion.thighsY = configFile->base_proportions.thighsY;
+		proportion.legsY = configFile->base_proportions.legsY;
+
+		offset.headY = configFile->base_offset.headY;
+		offset.chestY = configFile->base_offset.chestY;
+		offset.bellyY = configFile->base_offset.bellyY;
+		offset.thighsY = configFile->base_offset.thighsY;
+		offset.legsY = configFile->base_offset.legsY;
+
 		break;
 	case Variant::NIGHTWEAR:
 
-		proportion.headX = 0.62f;
-		proportion.chestX = 0.62f;
-		proportion.bellyX = 0.62f;
-		proportion.thighsX = 0.64f;
-		proportion.legsX = 0.62f;
+		proportion.headX = configFile->night_proportions.headX;
+		proportion.chestX = configFile->night_proportions.chestX;
+		proportion.bellyX = configFile->night_proportions.bellyX;
+		proportion.thighsX = configFile->night_proportions.thighsX;
+		proportion.legsX = configFile->night_proportions.legsX;
 
-		offset.headX = -15.0f;
-		offset.chestX = -15.0f;
-		offset.bellyX = -15.0f;
-		offset.thighsX = -10.0f;
-		offset.legsX = -0.0f;
+		offset.headX = configFile->night_offset.headX;
+		offset.chestX = configFile->night_offset.chestX;
+		offset.bellyX = configFile->night_offset.bellyX;
+		offset.thighsX = configFile->night_offset.thighsX;
+		offset.legsX = configFile->night_offset.legsX;
 
-		proportion.headY = 0.22f;
-		proportion.chestY = 0.1f;
-		proportion.bellyY = 0.12f;
-		proportion.thighsY = 0.15f;
-		proportion.legsY = 0.41f;
+		proportion.headY = configFile->night_proportions.headY;
+		proportion.chestY = configFile->night_proportions.chestY;
+		proportion.bellyY = configFile->night_proportions.bellyY;
+		proportion.thighsY = configFile->night_proportions.thighsY;
+		proportion.legsY = configFile->night_proportions.legsY;
+
+		offset.headY = configFile->night_offset.headY;
+		offset.chestY = configFile->night_offset.chestY;
+		offset.bellyY = configFile->night_offset.bellyY;
+		offset.thighsY = configFile->night_offset.thighsY;
+		offset.legsY = configFile->night_offset.legsY;
+
 		break;
 	case Variant::DRESS:
+
+		proportion.headX = configFile->dress_proportions.headX;
+		proportion.chestX = configFile->dress_proportions.chestX;
+		proportion.bellyX = configFile->dress_proportions.bellyX;
+		proportion.thighsX = configFile->dress_proportions.thighsX;
+		proportion.legsX = configFile->dress_proportions.legsX;
+
+		offset.headX = configFile->dress_offset.headX;
+		offset.chestX = configFile->dress_offset.chestX;
+		offset.bellyX = configFile->dress_offset.bellyX;
+		offset.thighsX = configFile->dress_offset.thighsX;
+		offset.legsX = configFile->dress_offset.legsX;
+
+		proportion.headY = configFile->dress_proportions.headY;
+		proportion.chestY = configFile->dress_proportions.chestY;
+		proportion.bellyY = configFile->dress_proportions.bellyY;
+		proportion.thighsY = configFile->dress_proportions.thighsY;
+		proportion.legsY = configFile->dress_proportions.legsY;
+
+		offset.headY = configFile->dress_offset.headY;
+		offset.chestY = configFile->dress_offset.chestY;
+		offset.bellyY = configFile->dress_offset.bellyY;
+		offset.thighsY = configFile->dress_offset.thighsY;
+		offset.legsY = configFile->dress_offset.legsY;
+
 		break;
 	case Variant::SWIMSUIT:
+
+		proportion.headX = configFile->swim_proportions.headX;
+		proportion.chestX = configFile->swim_proportions.chestX;
+		proportion.bellyX = configFile->swim_proportions.bellyX;
+		proportion.thighsX = configFile->swim_proportions.thighsX;
+		proportion.legsX = configFile->swim_proportions.legsX;
+
+		offset.headX = configFile->swim_offset.headX;
+		offset.chestX = configFile->swim_offset.chestX;
+		offset.bellyX = configFile->swim_offset.bellyX;
+		offset.thighsX = configFile->swim_offset.thighsX;
+		offset.legsX = configFile->swim_offset.legsX;
+
+		proportion.headY = configFile->swim_proportions.headY;
+		proportion.chestY = configFile->swim_proportions.chestY;
+		proportion.bellyY = configFile->swim_proportions.bellyY;
+		proportion.thighsY = configFile->swim_proportions.thighsY;
+		proportion.legsY = configFile->swim_proportions.legsY;
+
+		offset.headY = configFile->swim_offset.headY;
+		offset.chestY = configFile->swim_offset.chestY;
+		offset.bellyY = configFile->swim_offset.bellyY;
+		offset.thighsY = configFile->swim_offset.thighsY;
+		offset.legsY = configFile->swim_offset.legsY;
+
 		break;
 	}
 
@@ -259,35 +257,35 @@ void Companion::UpdateRegions(const Shapes::Rectangle& refRect)
 
 	regions.head = {
 	x + (width - headWidth) * 0.5f + offset.headX,
-	y,
+	y + offset.headY,
 	headWidth,
 	headHeight
 	};
 
 	regions.chest = {
 		x + (width - chestWidth) * 0.5f + offset.chestX,
-		y + headHeight,
+		y + headHeight + offset.chestY,
 		chestWidth,
 		chestHeight
 	};
 
 	regions.belly = {
 		x + (width - bellyWidth) * 0.5f + offset.bellyX,
-		y + headHeight + chestHeight,
+		y + headHeight + chestHeight + offset.bellyY,
 		bellyWidth,
 		bellyHeight
 	};
 
 	regions.thighs = {
 		x + (width - thighsWidth) * 0.5f + offset.thighsX,
-		y + headHeight + chestHeight + bellyHeight,
+		y + headHeight + chestHeight + bellyHeight + offset.thighsY,
 		thighsWidth,
 		thighsHeight
 	};
 
 	regions.legs = {
 		x + (width - legsWidth) * 0.5f + offset.legsX,
-		y + headHeight + chestHeight + bellyHeight + thighsHeight,
+		y + headHeight + chestHeight + bellyHeight + thighsHeight + offset.legsY,
 		legsWidth,
 		legsHeight
 	};
@@ -311,10 +309,10 @@ MoodImages Companion::LoadImagesFromFolder(const std::string& folderPath)
 
 		Image img = this->canvas->LoadImg(entry.path().string());
 
-		this->loadedImages.push_back(LoadedImage{std::move(img), filename});
+		this->loadedImages.push_back(LoadedImage{ std::move(img), filename });
 	}
 
-	for(auto& loadedImg : this->loadedImages)
+	for (auto& loadedImg : this->loadedImages)
 	{
 		const std::string& filename = loadedImg.filename;
 
@@ -351,59 +349,454 @@ MoodImages Companion::LoadImagesFromFolder(const std::string& folderPath)
 	return moodImages;
 }
 
-std::string Companion::LoadDialogFromFile(const std::string& filepath)
-{
-	/*
-		Extract the prefixes as it was done with images
-	 
-		File Structure for Variant:
-
-		variant/
-			mood1_place1_variant.txt
-			mood1_place2_variant.txt
-			mood2_place1_variant.txt
-			mood2_place2_variant.txt
-
-			global_mood1.txt
-			global_mood2.txt
-	*/
-
-
-	return "";
-}
-
 DialogManager Companion::LoadDialogsFromFolder(const std::string& folderPath)
 {
 	DialogManager dialogManager;
 
 	std::cout << "Current working directory: " << std::filesystem::current_path() << std::endl;
-	
 
-	return DialogManager();
+	for (const auto& entry : std::filesystem::directory_iterator(folderPath))
+	{
+		if (!entry.is_regular_file()) continue;
+
+		if(entry.path().extension() != ".txt") continue;
+
+		std::string filename = entry.path().filename().string();
+
+		std::string prefix = ExtractPrefix(filename);
+		std::string key = ToUpper(prefix);
+
+		std::ifstream file(entry.path());
+
+		if (!file.is_open())
+		{
+			continue;
+		}
+
+		std::vector<std::string> lines;
+		std::string line;
+
+		while (std::getline(file, line))
+		{
+			if (!line.empty())
+			{
+				lines.push_back(line);
+			}
+		}
+
+		auto dialogIt = dialogMap.find(key);
+
+		if (dialogIt != dialogMap.end())
+		{
+			const auto& moodPlace = dialogIt->second;
+
+			dialogManager.dialogsByMoodAndPlace[moodPlace].insert(
+				dialogManager.dialogsByMoodAndPlace[moodPlace].end(),
+				lines.begin(),
+				lines.end()
+			);
+
+			std::cout << "Loaded " << lines.size() << " dialogs for " << key << "\n";
+			continue;
+		}
+
+
+		auto moodIt = moodMap.find(key);
+		if (moodIt != moodMap.end())
+		{
+			Mood mood = moodIt->second;
+
+			dialogManager.globalDialogsByMood[mood].insert(
+				dialogManager.globalDialogsByMood[mood].end(),
+				lines.begin(), 
+				lines.end()
+			);
+
+			std::cout << "Loaded " << lines.size() << " dialogs for mood " << key << "\n";
+			continue;
+		}
+
+		std::cout << "No mapping found for prefix: " << key << " in file " << filename << "\n";
+	}
+
+
+
+	return dialogManager;
 }
 
 void Companion::Initialize(Variant variant)
 {
 	currentVariant = variant;
 
+	switch (currentVariant)
+	{
+	case Variant::BASE:
+
+		headMoods = {
+			{Mood::HAPPY, configFile->base.happy_head_prob},
+			{Mood::VERY_HAPPY,configFile->base.very_happy_head_prob},
+			{Mood::ANGRY,configFile->base.angry_head_prob},
+			{Mood::VERY_ANGRY, configFile->base.very_angry_head_prob},
+			{Mood::EMBARRASSED,configFile->base.embarrassed_head_prob},
+			{Mood::VERY_EMBARRASSED,configFile->base.very_embarrassed_head_prob},
+			{Mood::ANNOYED, configFile->base.annoyed_head_prob},
+			{Mood::VERY_ANNOYED, configFile->base.very_annoyed_head_prob},
+			{Mood::SURPRISED, configFile->base.surprised_head_prob},
+			{Mood::NEUTRAL, configFile->base.neutral_head_prob}
+		};
+
+		chestMoods = {
+			{Mood::HAPPY, configFile->base.happy_chest_prob},
+			{Mood::VERY_HAPPY, configFile->base.very_happy_chest_prob},
+			{Mood::ANGRY, configFile->base.angry_chest_prob},
+			{Mood::VERY_ANGRY, configFile->base.very_angry_chest_prob},
+			{Mood::EMBARRASSED, configFile->base.embarrassed_chest_prob},
+			{Mood::VERY_EMBARRASSED, configFile->base.very_embarrassed_chest_prob},
+			{Mood::ANNOYED, configFile->base.annoyed_chest_prob},
+			{Mood::VERY_ANNOYED, configFile->base.very_annoyed_chest_prob},
+			{Mood::SURPRISED, configFile->base.surprised_chest_prob},
+			{Mood::NEUTRAL, configFile->base.neutral_chest_prob}
+		};
+
+		bellyMoods = {
+			{Mood::HAPPY, configFile->base.happy_belly_prob},
+			{Mood::VERY_HAPPY, configFile->base.very_happy_belly_prob},
+			{Mood::ANGRY, configFile->base.angry_belly_prob},
+			{Mood::VERY_ANGRY, configFile->base.very_angry_belly_prob},
+			{Mood::EMBARRASSED, configFile->base.embarrassed_belly_prob},
+			{Mood::VERY_EMBARRASSED, configFile->base.very_embarrassed_belly_prob},
+			{Mood::ANNOYED, configFile->base.annoyed_belly_prob},
+			{Mood::VERY_ANNOYED, configFile->base.very_annoyed_belly_prob},
+			{Mood::SURPRISED, configFile->base.surprised_belly_prob},
+			{Mood::NEUTRAL, configFile->base.neutral_belly_prob}
+		};
+
+		thighsMoods = {
+			{Mood::HAPPY, configFile->base.happy_thighs_prob},
+			{Mood::VERY_HAPPY, configFile->base.very_happy_thighs_prob},
+			{Mood::ANGRY, configFile->base.angry_thighs_prob},
+			{Mood::VERY_ANGRY, configFile->base.very_angry_thighs_prob},
+			{Mood::EMBARRASSED, configFile->base.embarrassed_thighs_prob},
+			{Mood::VERY_EMBARRASSED, configFile->base.very_embarrassed_thighs_prob},
+			{Mood::ANNOYED, configFile->base.annoyed_thighs_prob},
+			{Mood::VERY_ANNOYED, configFile->base.very_annoyed_thighs_prob},
+			{Mood::SURPRISED, configFile->base.surprised_thighs_prob},
+			{Mood::NEUTRAL, configFile->base.neutral_thighs_prob}
+		};
+
+
+		legMoods = {
+			{Mood::HAPPY, configFile->base.happy_legs_prob},
+			{Mood::VERY_HAPPY, configFile->base.very_happy_legs_prob},
+			{Mood::ANGRY, configFile->base.angry_legs_prob},
+			{Mood::VERY_ANGRY, configFile->base.very_angry_legs_prob},
+			{Mood::EMBARRASSED, configFile->base.embarrassed_legs_prob},
+			{Mood::VERY_EMBARRASSED, configFile->base.very_embarrassed_legs_prob},
+			{Mood::ANNOYED, configFile->base.annoyed_legs_prob},
+			{Mood::VERY_ANNOYED, configFile->base.very_annoyed_legs_prob},
+			{Mood::SURPRISED, configFile->base.surprised_legs_prob},
+			{Mood::NEUTRAL, configFile->base.neutral_legs_prob}
+		};
+
+		break;
+
+	case Variant::NIGHTWEAR:
+
+		headMoods = {
+			{Mood::HAPPY, configFile->night.happy_head_prob},
+			{Mood::VERY_HAPPY,configFile->night.very_happy_head_prob},
+			{Mood::ANGRY,configFile->night.angry_head_prob},
+			{Mood::VERY_ANGRY, configFile->night.very_angry_head_prob},
+			{Mood::EMBARRASSED,configFile->night.embarrassed_head_prob},
+			{Mood::VERY_EMBARRASSED,configFile->night.very_embarrassed_head_prob},
+			{Mood::ANNOYED, configFile->night.annoyed_head_prob},
+			{Mood::VERY_ANNOYED, configFile->night.very_annoyed_head_prob},
+			{Mood::SURPRISED, configFile->night.surprised_head_prob},
+			{Mood::NEUTRAL, configFile->night.neutral_head_prob}
+		};
+
+		chestMoods = {
+			{Mood::HAPPY, configFile->night.happy_chest_prob},
+			{Mood::VERY_HAPPY, configFile->night.very_happy_chest_prob},
+			{Mood::ANGRY, configFile->night.angry_chest_prob},
+			{Mood::VERY_ANGRY, configFile->night.very_angry_chest_prob},
+			{Mood::EMBARRASSED, configFile->night.embarrassed_chest_prob},
+			{Mood::VERY_EMBARRASSED, configFile->night.very_embarrassed_chest_prob},
+			{Mood::ANNOYED, configFile->night.annoyed_chest_prob},
+			{Mood::VERY_ANNOYED, configFile->night.very_annoyed_chest_prob},
+			{Mood::SURPRISED, configFile->night.surprised_chest_prob},
+			{Mood::NEUTRAL, configFile->night.neutral_chest_prob}
+		};
+
+		bellyMoods = {
+			{Mood::HAPPY, configFile->night.happy_belly_prob},
+			{Mood::VERY_HAPPY, configFile->night.very_happy_belly_prob},
+			{Mood::ANGRY, configFile->night.angry_belly_prob},
+			{Mood::VERY_ANGRY, configFile->night.very_angry_belly_prob},
+			{Mood::EMBARRASSED, configFile->night.embarrassed_belly_prob},
+			{Mood::VERY_EMBARRASSED, configFile->night.very_embarrassed_belly_prob},
+			{Mood::ANNOYED, configFile->night.annoyed_belly_prob},
+			{Mood::VERY_ANNOYED, configFile->night.very_annoyed_belly_prob},
+			{Mood::SURPRISED, configFile->night.surprised_belly_prob},
+			{Mood::NEUTRAL, configFile->night.neutral_belly_prob}
+		};
+
+		thighsMoods = {
+			{Mood::HAPPY, configFile->night.happy_thighs_prob},
+			{Mood::VERY_HAPPY, configFile->night.very_happy_thighs_prob},
+			{Mood::ANGRY, configFile->night.angry_thighs_prob},
+			{Mood::VERY_ANGRY, configFile->night.very_angry_thighs_prob},
+			{Mood::EMBARRASSED, configFile->night.embarrassed_thighs_prob},
+			{Mood::VERY_EMBARRASSED, configFile->night.very_embarrassed_thighs_prob},
+			{Mood::ANNOYED, configFile->night.annoyed_thighs_prob},
+			{Mood::VERY_ANNOYED, configFile->night.very_annoyed_thighs_prob},
+			{Mood::SURPRISED, configFile->night.surprised_thighs_prob},
+			{Mood::NEUTRAL, configFile->night.neutral_thighs_prob}
+		};
+
+
+		legMoods = {
+			{Mood::HAPPY, configFile->night.happy_legs_prob},
+			{Mood::VERY_HAPPY, configFile->night.very_happy_legs_prob},
+			{Mood::ANGRY, configFile->night.angry_legs_prob},
+			{Mood::VERY_ANGRY, configFile->night.very_angry_legs_prob},
+			{Mood::EMBARRASSED, configFile->night.embarrassed_legs_prob},
+			{Mood::VERY_EMBARRASSED, configFile->night.very_embarrassed_legs_prob},
+			{Mood::ANNOYED, configFile->night.annoyed_legs_prob},
+			{Mood::VERY_ANNOYED, configFile->night.very_annoyed_legs_prob},
+			{Mood::SURPRISED, configFile->night.surprised_legs_prob},
+			{Mood::NEUTRAL, configFile->night.neutral_legs_prob}
+		};
+
+		break;
+
+	case Variant::DRESS:
+
+		headMoods = {
+			{Mood::HAPPY, configFile->dress.happy_head_prob},
+			{Mood::VERY_HAPPY,configFile->dress.very_happy_head_prob},
+			{Mood::ANGRY,configFile->dress.angry_head_prob},
+			{Mood::VERY_ANGRY, configFile->dress.very_angry_head_prob},
+			{Mood::EMBARRASSED,configFile->dress.embarrassed_head_prob},
+			{Mood::VERY_EMBARRASSED,configFile->dress.very_embarrassed_head_prob},
+			{Mood::ANNOYED, configFile->dress.annoyed_head_prob},
+			{Mood::VERY_ANNOYED, configFile->dress.very_annoyed_head_prob},
+			{Mood::SURPRISED, configFile->dress.surprised_head_prob},
+			{Mood::NEUTRAL, configFile->dress.neutral_head_prob}
+		};
+
+		chestMoods = {
+			{Mood::HAPPY, configFile->dress.happy_chest_prob},
+			{Mood::VERY_HAPPY, configFile->dress.very_happy_chest_prob},
+			{Mood::ANGRY, configFile->dress.angry_chest_prob},
+			{Mood::VERY_ANGRY, configFile->dress.very_angry_chest_prob},
+			{Mood::EMBARRASSED, configFile->dress.embarrassed_chest_prob},
+			{Mood::VERY_EMBARRASSED, configFile->dress.very_embarrassed_chest_prob},
+			{Mood::ANNOYED, configFile->dress.annoyed_chest_prob},
+			{Mood::VERY_ANNOYED, configFile->dress.very_annoyed_chest_prob},
+			{Mood::SURPRISED, configFile->dress.surprised_chest_prob},
+			{Mood::NEUTRAL, configFile->dress.neutral_chest_prob}
+		};
+
+		bellyMoods = {
+			{Mood::HAPPY, configFile->dress.happy_belly_prob},
+			{Mood::VERY_HAPPY, configFile->dress.very_happy_belly_prob},
+			{Mood::ANGRY, configFile->dress.angry_belly_prob},
+			{Mood::VERY_ANGRY, configFile->dress.very_angry_belly_prob},
+			{Mood::EMBARRASSED, configFile->dress.embarrassed_belly_prob},
+			{Mood::VERY_EMBARRASSED, configFile->dress.very_embarrassed_belly_prob},
+			{Mood::ANNOYED, configFile->dress.annoyed_belly_prob},
+			{Mood::VERY_ANNOYED, configFile->dress.very_annoyed_belly_prob},
+			{Mood::SURPRISED, configFile->dress.surprised_belly_prob},
+			{Mood::NEUTRAL, configFile->dress.neutral_belly_prob}
+		};
+
+		thighsMoods = {
+			{Mood::HAPPY, configFile->dress.happy_thighs_prob},
+			{Mood::VERY_HAPPY, configFile->dress.very_happy_thighs_prob},
+			{Mood::ANGRY, configFile->dress.angry_thighs_prob},
+			{Mood::VERY_ANGRY, configFile->dress.very_angry_thighs_prob},
+			{Mood::EMBARRASSED, configFile->dress.embarrassed_thighs_prob},
+			{Mood::VERY_EMBARRASSED, configFile->dress.very_embarrassed_thighs_prob},
+			{Mood::ANNOYED, configFile->dress.annoyed_thighs_prob},
+			{Mood::VERY_ANNOYED, configFile->dress.very_annoyed_thighs_prob},
+			{Mood::SURPRISED, configFile->dress.surprised_thighs_prob},
+			{Mood::NEUTRAL, configFile->dress.neutral_thighs_prob}
+		};
+
+
+		legMoods = {
+			{Mood::HAPPY, configFile->dress.happy_legs_prob},
+			{Mood::VERY_HAPPY, configFile->dress.very_happy_legs_prob},
+			{Mood::ANGRY, configFile->dress.angry_legs_prob},
+			{Mood::VERY_ANGRY, configFile->dress.very_angry_legs_prob},
+			{Mood::EMBARRASSED, configFile->dress.embarrassed_legs_prob},
+			{Mood::VERY_EMBARRASSED, configFile->dress.very_embarrassed_legs_prob},
+			{Mood::ANNOYED, configFile->dress.annoyed_legs_prob},
+			{Mood::VERY_ANNOYED, configFile->dress.very_annoyed_legs_prob},
+			{Mood::SURPRISED, configFile->dress.surprised_legs_prob},
+			{Mood::NEUTRAL, configFile->dress.neutral_legs_prob}
+		};
+
+		break;
+
+	case Variant::SWIMSUIT:
+
+		headMoods = {
+			{Mood::HAPPY, configFile->swim.happy_head_prob},
+			{Mood::VERY_HAPPY,configFile->swim.very_happy_head_prob},
+			{Mood::ANGRY,configFile->swim.angry_head_prob},
+			{Mood::VERY_ANGRY, configFile->swim.very_angry_head_prob},
+			{Mood::EMBARRASSED,configFile->swim.embarrassed_head_prob},
+			{Mood::VERY_EMBARRASSED,configFile->swim.very_embarrassed_head_prob},
+			{Mood::ANNOYED, configFile->swim.annoyed_head_prob},
+			{Mood::VERY_ANNOYED, configFile->swim.very_annoyed_head_prob},
+			{Mood::SURPRISED, configFile->swim.surprised_head_prob},
+			{Mood::NEUTRAL, configFile->swim.neutral_head_prob}
+		};
+
+		chestMoods = {
+			{Mood::HAPPY, configFile->swim.happy_chest_prob},
+			{Mood::VERY_HAPPY, configFile->swim.very_happy_chest_prob},
+			{Mood::ANGRY, configFile->swim.angry_chest_prob},
+			{Mood::VERY_ANGRY, configFile->swim.very_angry_chest_prob},
+			{Mood::EMBARRASSED, configFile->swim.embarrassed_chest_prob},
+			{Mood::VERY_EMBARRASSED, configFile->swim.very_embarrassed_chest_prob},
+			{Mood::ANNOYED, configFile->swim.annoyed_chest_prob},
+			{Mood::VERY_ANNOYED, configFile->swim.very_annoyed_chest_prob},
+			{Mood::SURPRISED, configFile->swim.surprised_chest_prob},
+			{Mood::NEUTRAL, configFile->swim.neutral_chest_prob}
+		};
+
+		bellyMoods = {
+			{Mood::HAPPY, configFile->swim.happy_belly_prob},
+			{Mood::VERY_HAPPY, configFile->swim.very_happy_belly_prob},
+			{Mood::ANGRY, configFile->swim.angry_belly_prob},
+			{Mood::VERY_ANGRY, configFile->swim.very_angry_belly_prob},
+			{Mood::EMBARRASSED, configFile->swim.embarrassed_belly_prob},
+			{Mood::VERY_EMBARRASSED, configFile->swim.very_embarrassed_belly_prob},
+			{Mood::ANNOYED, configFile->swim.annoyed_belly_prob},
+			{Mood::VERY_ANNOYED, configFile->swim.very_annoyed_belly_prob},
+			{Mood::SURPRISED, configFile->swim.surprised_belly_prob},
+			{Mood::NEUTRAL, configFile->swim.neutral_belly_prob}
+		};
+
+		thighsMoods = {
+			{Mood::HAPPY, configFile->swim.happy_thighs_prob},
+			{Mood::VERY_HAPPY, configFile->swim.very_happy_thighs_prob},
+			{Mood::ANGRY, configFile->swim.angry_thighs_prob},
+			{Mood::VERY_ANGRY, configFile->swim.very_angry_thighs_prob},
+			{Mood::EMBARRASSED, configFile->swim.embarrassed_thighs_prob},
+			{Mood::VERY_EMBARRASSED, configFile->swim.very_embarrassed_thighs_prob},
+			{Mood::ANNOYED, configFile->swim.annoyed_thighs_prob},
+			{Mood::VERY_ANNOYED, configFile->swim.very_annoyed_thighs_prob},
+			{Mood::SURPRISED, configFile->swim.surprised_thighs_prob},
+			{Mood::NEUTRAL, configFile->swim.neutral_thighs_prob}
+		};
+
+
+		legMoods = {
+			{Mood::HAPPY, configFile->swim.happy_legs_prob},
+			{Mood::VERY_HAPPY, configFile->swim.very_happy_legs_prob},
+			{Mood::ANGRY, configFile->swim.angry_legs_prob},
+			{Mood::VERY_ANGRY, configFile->swim.very_angry_legs_prob},
+			{Mood::EMBARRASSED, configFile->swim.embarrassed_legs_prob},
+			{Mood::VERY_EMBARRASSED, configFile->swim.very_embarrassed_legs_prob},
+			{Mood::ANNOYED, configFile->swim.annoyed_legs_prob},
+			{Mood::VERY_ANNOYED, configFile->swim.very_annoyed_legs_prob},
+			{Mood::SURPRISED, configFile->swim.surprised_legs_prob},
+			{Mood::NEUTRAL, configFile->swim.neutral_legs_prob}
+		};
+
+		break;
+
+	default:
+		headMoods = {
+		{Mood::HAPPY, configFile->base.happy_head_prob},
+		{Mood::VERY_HAPPY,configFile->base.very_happy_head_prob},
+		{Mood::ANGRY,configFile->base.angry_head_prob},
+		{Mood::VERY_ANGRY, configFile->base.very_angry_head_prob},
+		{Mood::EMBARRASSED,configFile->base.embarrassed_head_prob},
+		{Mood::VERY_EMBARRASSED,configFile->base.very_embarrassed_head_prob},
+		{Mood::ANNOYED, configFile->base.annoyed_head_prob},
+		{Mood::VERY_ANNOYED, configFile->base.very_annoyed_head_prob},
+		{Mood::SURPRISED, configFile->base.surprised_head_prob},
+		{Mood::NEUTRAL, configFile->base.neutral_head_prob}
+		};
+
+		chestMoods = {
+			{Mood::HAPPY, configFile->base.happy_chest_prob},
+			{Mood::VERY_HAPPY, configFile->base.very_happy_chest_prob},
+			{Mood::ANGRY, configFile->base.angry_chest_prob},
+			{Mood::VERY_ANGRY, configFile->base.very_angry_chest_prob},
+			{Mood::EMBARRASSED, configFile->base.embarrassed_chest_prob},
+			{Mood::VERY_EMBARRASSED, configFile->base.very_embarrassed_chest_prob},
+			{Mood::ANNOYED, configFile->base.annoyed_chest_prob},
+			{Mood::VERY_ANNOYED, configFile->base.very_annoyed_chest_prob},
+			{Mood::SURPRISED, configFile->base.surprised_chest_prob},
+			{Mood::NEUTRAL, configFile->base.neutral_chest_prob}
+		};
+
+		bellyMoods = {
+			{Mood::HAPPY, configFile->base.happy_belly_prob},
+			{Mood::VERY_HAPPY, configFile->base.very_happy_belly_prob},
+			{Mood::ANGRY, configFile->base.angry_belly_prob},
+			{Mood::VERY_ANGRY, configFile->base.very_angry_belly_prob},
+			{Mood::EMBARRASSED, configFile->base.embarrassed_belly_prob},
+			{Mood::VERY_EMBARRASSED, configFile->base.very_embarrassed_belly_prob},
+			{Mood::ANNOYED, configFile->base.annoyed_belly_prob},
+			{Mood::VERY_ANNOYED, configFile->base.very_annoyed_belly_prob},
+			{Mood::SURPRISED, configFile->base.surprised_belly_prob},
+			{Mood::NEUTRAL, configFile->base.neutral_belly_prob}
+		};
+
+		thighsMoods = {
+			{Mood::HAPPY, configFile->base.happy_thighs_prob},
+			{Mood::VERY_HAPPY, configFile->base.very_happy_thighs_prob},
+			{Mood::ANGRY, configFile->base.angry_thighs_prob},
+			{Mood::VERY_ANGRY, configFile->base.very_angry_thighs_prob},
+			{Mood::EMBARRASSED, configFile->base.embarrassed_thighs_prob},
+			{Mood::VERY_EMBARRASSED, configFile->base.very_embarrassed_thighs_prob},
+			{Mood::ANNOYED, configFile->base.annoyed_thighs_prob},
+			{Mood::VERY_ANNOYED, configFile->base.very_annoyed_thighs_prob},
+			{Mood::SURPRISED, configFile->base.surprised_thighs_prob},
+			{Mood::NEUTRAL, configFile->base.neutral_thighs_prob}
+		};
+
+
+		legMoods = {
+			{Mood::HAPPY, configFile->base.happy_legs_prob},
+			{Mood::VERY_HAPPY, configFile->base.very_happy_legs_prob},
+			{Mood::ANGRY, configFile->base.angry_legs_prob},
+			{Mood::VERY_ANGRY, configFile->base.very_angry_legs_prob},
+			{Mood::EMBARRASSED, configFile->base.embarrassed_legs_prob},
+			{Mood::VERY_EMBARRASSED, configFile->base.very_embarrassed_legs_prob},
+			{Mood::ANNOYED, configFile->base.annoyed_legs_prob},
+			{Mood::VERY_ANNOYED, configFile->base.very_annoyed_legs_prob},
+			{Mood::SURPRISED, configFile->base.surprised_legs_prob},
+			{Mood::NEUTRAL, configFile->base.neutral_legs_prob}
+		};
+		break;
+	}
+
 	loadedImages.clear();
 
-	std::string folderName = VariantToFolderName(currentVariant);
+	std::string imgFolderName = VariantToFolderName(currentVariant);
 
-	std::string path = "../assets/images/" + folderName;
+	std::string imgPath = "../assets/images/" + imgFolderName;
 
-	variantsImg[currentVariant] = LoadImagesFromFolder(path);
+	variantsImg[currentVariant] = LoadImagesFromFolder(imgPath);
 
 	auto it = variantsImg[currentVariant].imagesByMood.find(currentMood);
 
 	if (it != variantsImg[currentVariant].imagesByMood.end() && !it->second.empty())
 	{
 		currentImage = it->second.front();
-		
+
 	}
 	else
 	{
-		
+
 		currentImage = nullptr;
 	}
 
@@ -417,13 +810,21 @@ void Companion::Initialize(Variant variant)
 		fallbackImage = nullptr;
 	}
 
+	std::string dialogFolderName = VariantToFolderName(currentVariant);
+	std::string dialogPath = "../assets/dialogs/" + dialogFolderName;
+
+	variantDialog[currentVariant] = LoadDialogsFromFolder(dialogPath);
+
 }
 
 void Companion::ChangeVariant(Variant variant)
 {
 	if (variant == currentVariant) return;
 
-	Initialize(variant);
+	if (currentMood == Mood::IDLE)
+	{
+		Initialize(variant);
+	}
 }
 
 Mood Companion::PickMoodByProbabilty(const std::vector<std::pair<Mood, float>>& moodList)
@@ -455,15 +856,6 @@ void Companion::ChangeMood(Mood mood, Place place, float duration)
 
 		std::string nDialog = variantDialog[currentVariant].GetRandDialogForMoodAndPlace(currentMood, currentPlace);
 
-		if (nDialog == "")
-		{
-			nDialog = variantDialog[currentVariant].GetRandDialogForMoodAndPlace(Mood::NEUTRAL, currentPlace);
-
-			if (nDialog == "")
-			{
-				nDialog = variantDialog[currentVariant].GetRandDialogForMoodAndPlace(Mood::NEUTRAL, defaultPlace);
-			}
-		}
 
 		if (!nImage)
 		{
@@ -492,7 +884,7 @@ void Companion::ChangeMood(Mood mood, Place place, float duration)
 			else
 			{
 				currentImage = nImage;
-			}	
+			}
 		}
 		else
 		{
@@ -500,7 +892,7 @@ void Companion::ChangeMood(Mood mood, Place place, float duration)
 			currentImage = nImage;
 		}
 
-		std::cout << currentDialog <<" " << " is global dialog?: " << variantDialog[currentVariant].isGlobalDialog << "\n";
+		std::cout << currentDialog << " " << " is global dialog?: " << variantDialog[currentVariant].isGlobalDialog << "\n";
 
 		moodTimer = duration;
 		moodDuration = duration;
@@ -543,9 +935,29 @@ Variant Companion::GetCurrentVariant() const
 	return this->currentVariant;
 }
 
-std::string Companion::PickDialog(Mood mood, Place place)
+void Companion::DrawDialog(Shapes::Rectangle* refRect, float scale)
 {
-	
+	if (moodTimer >= 0.0f)
+	{
+		if (currentDialog != "" || !currentDialog.empty())
+		{
+			Shapes::Rectangle dialogBox;
 
-	return "";
+			float textSize = currentDialog.size();
+
+			dialogBox.width = 600.0f * scale * scale;
+			dialogBox.height = (100.0f + textSize) * scale * scale;
+
+			dialogBox.x = refRect->x + refRect->width * 0.5f - dialogBox.width * 0.5f;
+			dialogBox.y = refRect->y - dialogBox.height;//refRect->y + refRect->height - dialogBox.height;
+
+			//top text  dialogBox.y = refRect->y - dialogBox.height;
+			//bottom text dialogBox.y = refRect->y + refRect->height - dialogBox.height;
+
+			canvas->DrawRect(dialogBox, { 40,40,255,50 });
+
+			canvas->DrawTxt(currentDialog, dialogBox, { 255,255,255,255 });
+		}
+	}
 }
+

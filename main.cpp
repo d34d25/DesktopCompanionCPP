@@ -7,7 +7,7 @@
 
 Shapes::Rectangle clRect;
 
-Color rectCl = { 255,255,0,50};
+Color rectCl = { 255,255,0,50 };
 
 Companion* hinature = nullptr;
 
@@ -43,6 +43,8 @@ Button swimsuitBtn;
 
 Button closeBtn;
 
+ConfigFile config;
+
 void ResizeClRect(Image* img)
 {
 	float scaledImageWidth = img->width * hinaScale * hinaScale * rectScaleX;
@@ -66,20 +68,28 @@ void UpdateScaleForVariant()
 	switch (hinature->GetCurrentVariant())
 	{
 	case Variant::BASE:
-		offsetNumX = 30;
-		offsetNumY = 40;
-		rectScaleX = 0.17f;
-		rectScaleY = 0.85f;
+		offsetNumX = config.base_clRect_offset_x;
+		offsetNumY = config.base_clRect_offset_y;
+		rectScaleX = config.base_clRect_scale_x;
+		rectScaleY = config.base_clRect_scale_y;
 		break;
 	case Variant::NIGHTWEAR:
-		offsetNumX = -20;
-		offsetNumY = 35;
-		rectScaleX = 0.4;
-		rectScaleY = 0.85;
-		break;
-	case Variant::SWIMSUIT:
+		offsetNumX = config.night_clRect_offset_x;
+		offsetNumY = config.night_clRect_offset_y;
+		rectScaleX = config.night_clRect_scale_x;
+		rectScaleY = config.night_clRect_scale_y;
 		break;
 	case Variant::DRESS:
+		offsetNumX = config.dress_clRect_offset_x;
+		offsetNumY = config.dress_clRect_offset_y;
+		rectScaleX = config.dress_clRect_scale_x;
+		rectScaleY = config.dress_clRect_scale_y;
+		break;
+	case Variant::SWIMSUIT:
+		offsetNumX = config.swim_clRect_offset_x;
+		offsetNumY = config.swim_clRect_offset_y;
+		rectScaleX = config.swim_clRect_scale_x;
+		rectScaleY = config.swim_clRect_scale_y;
 		break;
 	}
 
@@ -126,20 +136,22 @@ void Update()
 		else if (clicked)
 		{
 			currentPlace = Place::NONE;
-			hinature->ChangeMood(newMood, currentPlace ,1.0f);
+			hinature->ChangeMood(newMood, currentPlace, 1.0f);
 		}
 
 		hinature->UpdateTimer(&currentPlace);
 	}
-	
+
 }
+
+
 
 void mDraw(NewCanvasX* canvas)
 {
 
 	canvas->BeginDraw();
 
-	canvas->Clear({0.0f,0.0f,0.0f,0.0f});
+	canvas->Clear({ 0.0f,0.0f,0.0f,0.0f });
 
 	//draw here--------------------------------------------------------
 
@@ -150,21 +162,21 @@ void mDraw(NewCanvasX* canvas)
 		* Copy for image objects is disabled
 		* so after doing Image img = LoadImg("path");
 		* you can't copy it in any way
-		* 
+		*
 		* so doing Image img2 = img is not possible
 		* for that you gotta do img2 = std::move(img);
-		* 
+		*
 		* but doing this will result of the original varibale
 		* not be usebale unless you move it back again
 		* (you're literally moving the variable from one place
 		* to another)
-		* 
+		*
 		* another approach is using pointers
-		* 
+		*
 		*/
 
 		//I hope I don't end up breaking my keyboard :)
-		
+
 		float offsetX, offsetY;
 
 		offsetX = offsetNumX * hinaScale * hinaScale;
@@ -172,7 +184,7 @@ void mDraw(NewCanvasX* canvas)
 
 		Image* currImg = hinature->GetCurrentImage();
 
-		if (currImg) 
+		if (currImg)
 		{
 			float drawX = clRect.x + (clRect.width * 0.5f) - (currImg->width * hinaScale * 0.5f) + offsetX;
 			float drawY = clRect.y + (clRect.height * 0.5f) - (currImg->height * hinaScale * 0.5f) + offsetY;
@@ -181,12 +193,14 @@ void mDraw(NewCanvasX* canvas)
 			{
 				canvas->DrawImg(*currImg, drawX, drawY, nullptr, 0.0f, hinaScale, hinaScale);
 			}
+
+			hinature->DrawDialog(&clRect, hinaScale);
 		}
 
 		canvas->DrawCir(scaleUpBtn.button, scaleUpBtn.element.uiColor);
 
-		Shapes::Rectangle scaleUpTextArea = SetButtonTextArea(scaleUpBtn, 
-			scaleUpBtn.button.radius * 0.5f -1.0f,
+		Shapes::Rectangle scaleUpTextArea = SetButtonTextArea(scaleUpBtn,
+			scaleUpBtn.button.radius * 0.5f - 1.0f,
 			-scaleUpBtn.button.radius * 0.25);
 
 		canvas->DrawTxt(scaleUpBtn.text, scaleUpTextArea, { 255,255,255, scaleUpBtn.element.uiColor.a });
@@ -236,18 +250,22 @@ void mDraw(NewCanvasX* canvas)
 		canvas->DrawTxt(swimsuitBtn.text, swimsuitBtnTextArea, { 255,255,255,swimsuitBtn.element.uiColor.a });
 
 
-		//debug drawing
+		
 
-		/*canvas->DrawRectO(hinature->regions.head, {255,0,255,255});
-		canvas->DrawRectO(hinature->regions.chest, { 255,255,0,255 });
-		canvas->DrawRectO(hinature->regions.belly, { 255,0,0,255 });
-		canvas->DrawRectO(hinature->regions.thighs, { 0,0,255,255 });
-		canvas->DrawRectO(hinature->regions.legs, { 0,255,0,255 });*/
 	}
 
 	//debug drawing
-	//canvas->DrawRect(clRect, rectCl);
 
+	if (config.debug_draw)
+	{
+		canvas->DrawRectO(hinature->regions.head, { 255,0,255,255 });
+		canvas->DrawRectO(hinature->regions.chest, { 255,255,0,255 });
+		canvas->DrawRectO(hinature->regions.belly, { 255,0,0,255 });
+		canvas->DrawRectO(hinature->regions.thighs, { 0,0,255,255 });
+		canvas->DrawRectO(hinature->regions.legs, { 0,255,0,255 });
+
+		canvas->DrawRect(clRect, rectCl);
+	}
 
 
 	//--------------------------------------------------------------------
@@ -260,14 +278,16 @@ void mDraw(NewCanvasX* canvas)
 
 int main()
 {
+	config = LoadConfigFile("../config.txt");
+
 	dragging = false;
 
 	Window* pWindow = new Window(1200, 680);
-	
+
 	screenW = pWindow->GetScreenWidth();
 	screenH = pWindow->GetScreenHeight();
 
-	hinature = new Companion(pWindow->GetNewCanvas(), Variant::BASE);
+	hinature = new Companion(pWindow->GetNewCanvas(), Variant::BASE, &config);
 
 	UpdateScaleForVariant();
 
@@ -331,7 +351,7 @@ int main()
 	closeBtn.text = "X";
 
 	// First button at y = 30 + 10 = 40
-	SetBtnPos(scaleUpBtn, clRect, buttonDiameter, baseY); 
+	SetBtnPos(scaleUpBtn, clRect, buttonDiameter, baseY);
 	SetBtnPos(scaleDownBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 1);
 	SetBtnPos(baseBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 2);
 	SetBtnPos(nightwearBtn, clRect, buttonDiameter, baseY + (buttonDiameter + buttonSpacing) * 3);
@@ -374,8 +394,8 @@ int main()
 		bool mouseInCloseBtnArea = IsPointOnRect(mousePos, closeBtn.element.hitbox);
 
 		bool mouseInButton = mouseInScaleUpBtnArea || mouseInScaleDownBtnArea ||
-			mouseInBaseBtnArea || mouseInNightwearBtnArea ||mouseInDressBtnArea || 
-			mouseInSwimsuitBtnArea ||mouseInCloseBtnArea;
+			mouseInBaseBtnArea || mouseInNightwearBtnArea || mouseInDressBtnArea ||
+			mouseInSwimsuitBtnArea || mouseInCloseBtnArea;
 
 		bool leftMousePressed = globalInput->IsLeftMousePressed();
 
@@ -390,7 +410,7 @@ int main()
 		clickedInBelly = IsPointOnRect(mousePos, hinature->regions.belly) && leftMousePressed;
 		clickedInThighs = IsPointOnRect(mousePos, hinature->regions.thighs) && leftMousePressed;
 		clickedInLegs = IsPointOnRect(mousePos, hinature->regions.legs) && leftMousePressed;
-		
+
 
 		if (mouseInClickableArea || mouseInButton)
 		{
@@ -427,7 +447,7 @@ int main()
 		{
 			dragging = true;
 		}
-		else if(middleMouseReleased)
+		else if (middleMouseReleased)
 		{
 			dragging = false;
 		}
@@ -490,20 +510,20 @@ int main()
 
 		if (mouseInDressBtnArea && leftMousePressed)
 		{
-			//hinature->ChangeVariant(Variant::DRESS);
+			hinature->ChangeVariant(Variant::DRESS);
 
-			//UpdateScaleForVariant();
+			UpdateScaleForVariant();
 
-			//UpdateButtonsAndRect();
+			UpdateButtonsAndRect();
 		}
 
 		if (mouseInSwimsuitBtnArea && leftMousePressed)
 		{
-			//hinature->ChangeVariant(Variant::SWIMSUIT);
+			hinature->ChangeVariant(Variant::SWIMSUIT);
 
-			//UpdateScaleForVariant();
+			UpdateScaleForVariant();
 
-			//UpdateButtonsAndRect();
+			UpdateButtonsAndRect();
 		}
 
 		if (dragging)
@@ -516,14 +536,15 @@ int main()
 
 		if (mouseInCloseBtnArea && leftMousePressed)
 		{
-			//close program
+			PostMessage(pWindow->GetHWND(), WM_CLOSE, 0, 0);
 		}
-		
+
 		Update();
 
 		Sleep(20);
 	}
 
+	
 	delete hinature;
 	delete globalInput;
 	delete pWindow;
